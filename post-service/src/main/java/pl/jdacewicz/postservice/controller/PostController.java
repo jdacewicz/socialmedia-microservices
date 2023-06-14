@@ -10,7 +10,7 @@ import pl.jdacewicz.postservice.service.PostService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping(value = "/api/posts", headers = "Accept=application/json")
 public class PostController {
 
     private final PostService postService;
@@ -26,7 +26,13 @@ public class PostController {
         return postService.getAllPosts();
     }
 
-    @PostMapping(headers = "Accept=application/json")
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Post getPostById(@PathVariable long id) {
+        return postService.getPostById(id);
+    }
+
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createPost(@RequestBody PostRequest postRequest) {
         postService.createPost(postRequest);
