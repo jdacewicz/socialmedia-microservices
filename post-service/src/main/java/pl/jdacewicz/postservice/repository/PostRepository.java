@@ -13,5 +13,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Post p SET p.visible = ?2 WHERE p.id = ?1")
-    void findByIdAndSetVisible(long id, boolean visible);
+    void setVisibleById(long id, boolean visible);
 }

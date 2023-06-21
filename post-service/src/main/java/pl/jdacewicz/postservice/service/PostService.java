@@ -28,7 +28,7 @@ public class PostService {
 
     @Transient
     public void changePostVisibility(long id, boolean visible) {
-        postRepository.findByIdAndSetVisible(id, visible);
+        postRepository.setVisibleById(id, visible);
     }
 
     public void deletePost(long id) {
