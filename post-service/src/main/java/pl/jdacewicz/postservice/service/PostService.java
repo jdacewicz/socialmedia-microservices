@@ -1,5 +1,6 @@
 package pl.jdacewicz.postservice.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.jdacewicz.postservice.exception.RecordNotFoundException;
@@ -22,17 +23,15 @@ public class PostService {
 
     public Post getVisiblePostById(long id) {
         return postRepository.findByIdAndVisibleIs(id, true)
-                .orElseThrow(() -> new RecordNotFoundException("Post with given id doesn't exist"));
+                .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
     }
 
-    public Post changePostVisibility(long id, boolean visible) {
-        return postRepository.findById(id)
-                .map(post -> Post.builder()
-                        .id(post.getId())
-                        .creationTime(post.getCreationTime())
-                        .content(post.getContent())
-                        .visible(visible)
-                        .build())
-                .orElseThrow(() -> new RecordNotFoundException("Post with given id doesn't exist"));
+    @Transient
+    public void changePostVisibility(long id, boolean visible) {
+        postRepository.findByIdAndSetVisible(id, visible);
+    }
+
+    public void deletePost(long id) {
+        postRepository.deleteById(id);
     }
 }

@@ -2,6 +2,7 @@ package pl.jdacewicz.postservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.PostDto;
 import pl.jdacewicz.postservice.dto.PostRequest;
@@ -10,6 +11,7 @@ import pl.jdacewicz.postservice.model.Post;
 import pl.jdacewicz.postservice.service.PostService;
 
 @RestController
+@Transactional
 @RequestMapping(value = "/api/posts", headers = "Accept=application/json")
 public class PostController {
 
@@ -39,9 +41,14 @@ public class PostController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PostDto changePostVisibility(@PathVariable long id,
-                                        @RequestParam boolean visible) {
-        Post post = postService.changePostVisibility(id, visible);
-        return postMapper.convertToDto(post);
+    public void changePostVisibility(@PathVariable long id,
+                                     @RequestParam boolean visible) {
+        postService.changePostVisibility(id, visible);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePost(@PathVariable long id) {
+        postService.deletePost(id);
     }
 }
