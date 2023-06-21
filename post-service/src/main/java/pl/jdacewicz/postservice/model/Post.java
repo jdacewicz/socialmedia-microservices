@@ -1,4 +1,4 @@
-package pl.jdacewicz.postservice.entity;
+package pl.jdacewicz.postservice.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,16 +9,30 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Reaction {
+@NoArgsConstructor
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
-    private String name;
+    //User creator
+
+    //reactions
+
+    @Builder.Default
+    private LocalDateTime creationTime = LocalDateTime.now();
+
+    private String content;
+
+    //image
+
+    @Builder.Default
+    private boolean visible = true;
 }
