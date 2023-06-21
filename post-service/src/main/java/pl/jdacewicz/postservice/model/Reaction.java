@@ -20,5 +20,9 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    //Posts
+
     private String name;
+
+    //image
 }
