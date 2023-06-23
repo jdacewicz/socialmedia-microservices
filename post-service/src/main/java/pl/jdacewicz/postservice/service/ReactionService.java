@@ -45,4 +45,8 @@ public class ReactionService {
     public void updateReaction(int id, Reaction reaction) {
         reactionRepository.setReactionById(id, reaction);
     }
+
+    public void deleteReaction(int id) {
+        reactionRepository.deleteById(id);
+    }
 }

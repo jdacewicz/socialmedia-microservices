@@ -58,4 +58,10 @@ public class ReactionController {
         Reaction reaction = reactionMapper.convertFromRequest(reactionRequest);
         reactionService.updateReaction(id, reaction);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteReaction(@PathVariable int id) {
+        reactionService.deleteReaction(id);
+    }
 }
