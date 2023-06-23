@@ -46,6 +46,13 @@ public class PostController {
         postService.changePostVisibility(id, visible);
     }
 
+    @PutMapping("/{postId}/react/{reactionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void reactToPost(@PathVariable long postId,
+                            @PathVariable int reactionId) {
+        postService.reactToPost(postId, reactionId);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable long id) {
