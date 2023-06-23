@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -16,7 +17,7 @@ public class PostDto {
 
     //UserDto
 
-    //List<ReactionsDto>
+    private List<PostReactionDto> reactions;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd-MM-yyyy")
     private LocalDateTime creationTime;
