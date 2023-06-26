@@ -7,9 +7,11 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class PostReactionDto {
+public class ReactionCountDto {
 
     private String name;
+
     //img
+
     private long count;
 }

@@ -17,12 +17,12 @@ public class PostDto {
 
     //UserDto
 
-    private List<PostReactionDto> reactions;
+    private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd-MM-yyyy")
     private LocalDateTime creationTime;
 
-    private String content;
+    private List<ReactionCountDto> reactions;
 
     //image url
 }
