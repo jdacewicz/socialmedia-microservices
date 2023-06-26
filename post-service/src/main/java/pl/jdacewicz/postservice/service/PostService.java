@@ -4,6 +4,7 @@ import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.jdacewicz.postservice.exception.RecordNotFoundException;
+import pl.jdacewicz.postservice.model.Comment;
 import pl.jdacewicz.postservice.model.Post;
 import pl.jdacewicz.postservice.model.Reaction;
 import pl.jdacewicz.postservice.repository.PostRepository;
@@ -45,5 +46,13 @@ public class PostService {
 
     public void deletePost(long id) {
         postRepository.deleteById(id);
+    }
+
+    public void commentPost(long postId, Comment comment) {
+        postRepository.findById(postId)
+                .map(post -> {
+                    post.addComment(comment);
+                    return postRepository.save(post);
+        }).orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + postId));
     }
 }

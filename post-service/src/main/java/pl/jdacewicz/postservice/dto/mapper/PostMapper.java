@@ -10,10 +10,12 @@ import pl.jdacewicz.postservice.model.Post;
 public class PostMapper {
 
     private final ReactionMapper reactionMapper;
+    private final CommentMapper commentMapper;
 
     @Autowired
-    public PostMapper(ReactionMapper reactionMapper) {
+    public PostMapper(ReactionMapper reactionMapper, CommentMapper commentMapper) {
         this.reactionMapper = reactionMapper;
+        this.commentMapper = commentMapper;
     }
 
     public PostDto convertToDto(Post post) {
@@ -22,6 +24,7 @@ public class PostMapper {
                 .creationTime(post.getCreationTime())
                 .content(post.getContent())
                 .reactions(reactionMapper.convertToCountDto(post.getReactions()))
+                .comments(commentMapper.convertToDto(post.getComments()))
                 .build();
     }
 

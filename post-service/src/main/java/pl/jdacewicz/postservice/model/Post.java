@@ -32,7 +32,7 @@ public class Post {
     @Builder.Default
     private List<Reaction> reactions = new LinkedList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> comments = new LinkedList<>();
 
@@ -49,5 +49,10 @@ public class Post {
     public void addReaction(Reaction reaction) {
         reactions.add(reaction);
         reaction.getPostList().add(this);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setPost(this);
     }
 }

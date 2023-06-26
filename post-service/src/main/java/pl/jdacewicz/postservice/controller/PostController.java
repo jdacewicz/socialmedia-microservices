@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import pl.jdacewicz.postservice.dto.CommentRequest;
 import pl.jdacewicz.postservice.dto.PostDto;
 import pl.jdacewicz.postservice.dto.PostRequest;
+import pl.jdacewicz.postservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.postservice.dto.mapper.PostMapper;
+import pl.jdacewicz.postservice.model.Comment;
 import pl.jdacewicz.postservice.model.Post;
 import pl.jdacewicz.postservice.service.PostService;
 
@@ -17,11 +20,13 @@ public class PostController {
 
     private final PostService postService;
     private final PostMapper postMapper;
+    private final CommentMapper commentMapper;
 
     @Autowired
-    public PostController(PostService postService, PostMapper postMapper) {
+    public PostController(PostService postService, PostMapper postMapper, CommentMapper commentMapper) {
         this.postService = postService;
         this.postMapper = postMapper;
+        this.commentMapper = commentMapper;
     }
 
     @GetMapping("/{id}")
@@ -51,6 +56,14 @@ public class PostController {
     public void reactToPost(@PathVariable long postId,
                             @PathVariable int reactionId) {
         postService.reactToPost(postId, reactionId);
+    }
+
+    @PutMapping("/{postId}/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public void commentPost(@PathVariable long postId,
+                            @RequestBody CommentRequest commentRequest) {
+        Comment comment = commentMapper.convertFromRequest(commentRequest);
+        postService.commentPost(postId, comment);
     }
 
     @DeleteMapping("/{id}")

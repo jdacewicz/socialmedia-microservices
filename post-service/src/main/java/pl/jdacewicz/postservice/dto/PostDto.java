@@ -24,5 +24,7 @@ public class PostDto {
 
     private List<ReactionCountDto> reactions;
 
+    private List<CommentDto> comments;
+
     //image url
 }
