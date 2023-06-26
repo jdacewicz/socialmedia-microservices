@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "t_reactions")
 public class Reaction {
 
     @Id
@@ -21,6 +22,9 @@ public class Reaction {
 
     @ManyToMany(mappedBy = "reactions")
     private List<Post> postList;
+
+    @ManyToMany(mappedBy = "reactions")
+    private List<Comment> commentList;
 
     private String name;
 

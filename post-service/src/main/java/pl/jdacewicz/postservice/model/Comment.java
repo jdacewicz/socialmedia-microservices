@@ -15,39 +15,31 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "t_posts")
-public class Post {
+@Table(name = "t_comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    //User creator
+    //creator User
+
+    @ManyToOne
+    @JoinColumn(name="post_id")
+    private Post post;
 
     @ManyToMany
     @JoinTable(
-            name = "posts_reactions",
-            joinColumns = @JoinColumn(name = "post_id"),
+            name = "comments_reactions",
+            joinColumns = @JoinColumn(name = "comment_id"),
             inverseJoinColumns = @JoinColumn(name = "reaction_id"))
     @Builder.Default
     private List<Reaction> reactions = new LinkedList<>();
-
-    @OneToMany(mappedBy = "post")
-    @Builder.Default
-    private List<Comment> comments = new LinkedList<>();
 
     @Builder.Default
     private LocalDateTime creationTime = LocalDateTime.now();
 
     private String content;
 
-    //image
-
-    @Builder.Default
-    private boolean visible = true;
-
-    public void addReaction(Reaction reaction) {
-        reactions.add(reaction);
-        reaction.getPostList().add(this);
-    }
+    //img
 }
