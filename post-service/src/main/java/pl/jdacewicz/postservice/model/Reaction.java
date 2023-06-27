@@ -20,13 +20,16 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String name;
+
+    //image
+
     @ManyToMany(mappedBy = "reactions")
     private List<Post> postList;
 
     @ManyToMany(mappedBy = "reactions")
     private List<Comment> commentList;
 
-    private String name;
-
-    //image
+    @ManyToMany(mappedBy = "reactions")
+    private List<Advertisement> advertisementList;
 }

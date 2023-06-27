@@ -22,11 +22,19 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String content;
+
+    //img
+
     //creator User
 
     @ManyToOne
     @JoinColumn(name="post_id")
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     @ManyToMany
     @JoinTable(
@@ -41,10 +49,6 @@ public class Comment {
 
     @Builder.Default
     private boolean visible = true;
-
-    private String content;
-
-    //img
 
     public void addReaction(Reaction reaction) {
         reactions.add(reaction);

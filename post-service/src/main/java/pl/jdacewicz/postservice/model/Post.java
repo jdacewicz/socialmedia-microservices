@@ -22,6 +22,13 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Builder.Default
+    private LocalDateTime creationTime = LocalDateTime.now();
+
+    private String content;
+
+    //image
+
     //User creator
 
     @ManyToMany
@@ -35,13 +42,6 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> comments = new LinkedList<>();
-
-    @Builder.Default
-    private LocalDateTime creationTime = LocalDateTime.now();
-
-    private String content;
-
-    //image
 
     @Builder.Default
     private boolean visible = true;
