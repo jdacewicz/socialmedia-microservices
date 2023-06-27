@@ -24,7 +24,10 @@ public class PostMapper {
                 .creationTime(post.getCreationTime())
                 .content(post.getContent())
                 .reactions(reactionMapper.convertToCountDto(post.getReactions()))
-                .comments(commentMapper.convertToDto(post.getComments()))
+                .comments(commentMapper.convertToDto(post.getComments()
+                        .stream()
+                        .limit(2)
+                        .toList()))
                 .build();
     }
 
