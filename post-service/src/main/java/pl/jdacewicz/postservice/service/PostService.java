@@ -21,13 +21,13 @@ public class PostService {
         this.reactionService = reactionService;
     }
 
-    public Post createPost(Post post) {
-        return postRepository.save(post);
-    }
-
     public Post getVisiblePostById(long id) {
         return postRepository.findByIdAndVisibleIs(id, true)
                 .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
+    }
+
+    public Post createPost(Post post) {
+        return postRepository.save(post);
     }
 
     @Transient

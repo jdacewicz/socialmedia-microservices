@@ -1,6 +1,7 @@
 package pl.jdacewicz.postservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.CommentDto;
@@ -26,6 +27,17 @@ public class CommentController {
     public CommentDto getCommentById(@PathVariable long id) {
         Comment comment = commentService.getCommentById(id);
         return commentMapper.convertToDto(comment);
+    }
+
+    @GetMapping("/post/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CommentDto> getPostComments(@PathVariable long postId,
+                                            @RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "5") int size,
+                                            @RequestParam(defaultValue = "creationTime") String sort,
+                                            @RequestParam(defaultValue = "true") boolean desc) {
+        return commentService.getPostComments(postId, page, size, sort, desc)
+                .map(commentMapper::convertToDto);
     }
 
     @PutMapping("/{commentId}/react/{reactionId}")
