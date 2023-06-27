@@ -42,4 +42,9 @@ public class Comment {
     private String content;
 
     //img
+
+    public void addReaction(Reaction reaction) {
+        reactions.add(reaction);
+        reaction.getCommentList().add(this);
+    }
 }

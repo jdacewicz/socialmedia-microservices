@@ -27,4 +27,17 @@ public class CommentController {
         Comment comment = commentService.getCommentById(id);
         return commentMapper.convertToDto(comment);
     }
+
+    @PutMapping("/{commentId}/react/{reactionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void reactToComment(@PathVariable long commentId,
+                               @PathVariable int reactionId) {
+        commentService.reactToComment(commentId, reactionId);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteComment(@PathVariable long id) {
+        commentService.deleteComment(id);
+    }
 }
