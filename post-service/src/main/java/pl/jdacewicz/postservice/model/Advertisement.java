@@ -34,7 +34,8 @@ public class Advertisement {
     private List<Reaction> reactions = new LinkedList<>();
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    @Builder.Default
+    private List<Comment> comments = new LinkedList<>();
 
     @Builder.Default
     private boolean active = true;
