@@ -1,5 +1,6 @@
 package pl.jdacewicz.postservice.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,17 +24,21 @@ public class CommentService {
         this.reactionService = reactionService;
     }
 
-
-    public Comment getCommentById(long id) {
-        return commentRepository.findById(id)
+    public Comment getVisibleCommentById(long id) {
+        return commentRepository.findByIdAndVisible(id, true)
                 .orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + id));
     }
 
-    public Page<Comment> getPostComments(long postId, int page, int size, String sort, boolean desc) {
+    public Page<Comment> getPostComments(long postId, boolean visible, int page, int size, String sort, boolean desc) {
         Sort pageSort = (desc) ? Sort.by(sort).descending() : Sort.by(sort).ascending();
         Pageable paging = PageRequest.of(page, size, pageSort);
 
-        return commentRepository.findAllByPostId(postId, paging);
+        return commentRepository.findAllByPostIdAndVisible(postId, visible, paging);
+    }
+
+    @Transient
+    public void changeCommentVisibility(long id, boolean visible) {
+        commentRepository.setVisibilityBy(id, visible);
     }
 
     public void reactToComment(long commentId, int reactionId) {

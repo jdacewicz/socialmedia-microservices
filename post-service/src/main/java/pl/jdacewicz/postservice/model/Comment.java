@@ -39,6 +39,9 @@ public class Comment {
     @Builder.Default
     private LocalDateTime creationTime = LocalDateTime.now();
 
+    @Builder.Default
+    private boolean visible = true;
+
     private String content;
 
     //img
