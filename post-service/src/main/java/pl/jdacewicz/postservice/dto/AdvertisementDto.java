@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class AdvertisementDto {
 
+   private String name;
+
    private String content;
 
    private List<ReactionCountDto> reactions;

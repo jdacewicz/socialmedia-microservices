@@ -20,12 +20,14 @@ public class AdvertisementMapper {
 
     public Advertisement convertFromRequest(AdvertisementRequest advertisementRequest) {
         return Advertisement.builder()
+                .name(advertisementRequest.name())
                 .content(advertisementRequest.content())
                 .build();
     }
 
     public AdvertisementDto convertToDto(Advertisement createdAdvertisement) {
         return AdvertisementDto.builder()
+                .name(createdAdvertisement.getName())
                 .content(createdAdvertisement.getContent())
                 .reactions(reactionMapper.convertToCountDto(createdAdvertisement.getReactions()))
                 .comments(commentMapper.convertToDto(createdAdvertisement.getComments()
