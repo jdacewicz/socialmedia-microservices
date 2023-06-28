@@ -38,8 +38,8 @@ public class CommentController {
                                             @RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "5") int size,
                                             @RequestParam(defaultValue = "creationTime") String sort,
-                                            @RequestParam(defaultValue = "true") boolean desc) {
-        return commentService.getPostComments(postId, visible, page, size, sort, desc)
+                                            @RequestParam(defaultValue = "ASC") String directory) {
+        return commentService.getPostComments(postId, visible, page, size, sort, directory)
                 .map(commentMapper::convertToDto);
     }
 

@@ -38,8 +38,8 @@ public class ReactionController {
                                              @RequestParam(defaultValue = "0") int page,
                                              @RequestParam(defaultValue = "8") int size,
                                              @RequestParam(defaultValue = "id") String sort,
-                                             @RequestParam(defaultValue = "false") boolean desc) {
-        return reactionService.getReactions(name, page, size, sort, desc)
+                                             @RequestParam(defaultValue = "ASC") String directory) {
+        return reactionService.getReactions(name, page, size, sort, directory)
                 .map(reactionMapper::convertToDto);
     }
 

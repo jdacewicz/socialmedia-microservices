@@ -3,13 +3,12 @@ package pl.jdacewicz.postservice.service;
 import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.jdacewicz.postservice.exception.RecordNotFoundException;
 import pl.jdacewicz.postservice.model.Reaction;
 import pl.jdacewicz.postservice.repository.ReactionRepository;
+import pl.jdacewicz.postservice.util.PageableUtils;
 
 @Service
 public class ReactionService {
@@ -26,10 +25,8 @@ public class ReactionService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
     }
 
-    public Page<Reaction> getReactions(String name, int page, int size, String sort, boolean desc) {
-        Sort pageSort = (desc) ? Sort.by(sort).descending() : Sort.by(sort).ascending();
-        Pageable paging = PageRequest.of(page, size, pageSort);
-
+    public Page<Reaction> getReactions(String name, int page, int size, String sort, String directory) {
+        Pageable paging = PageableUtils.createPageable(page, size, sort, directory);
         if (name == null || name.isEmpty()) {
             return reactionRepository.findAll(paging);
         } else {

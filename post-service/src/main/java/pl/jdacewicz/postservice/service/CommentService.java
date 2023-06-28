@@ -3,14 +3,13 @@ package pl.jdacewicz.postservice.service;
 import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.jdacewicz.postservice.exception.RecordNotFoundException;
 import pl.jdacewicz.postservice.model.Comment;
 import pl.jdacewicz.postservice.model.Reaction;
 import pl.jdacewicz.postservice.repository.CommentRepository;
+import pl.jdacewicz.postservice.util.PageableUtils;
 
 @Service
 public class CommentService {
@@ -29,10 +28,8 @@ public class CommentService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + id));
     }
 
-    public Page<Comment> getPostComments(long postId, boolean visible, int page, int size, String sort, boolean desc) {
-        Sort pageSort = (desc) ? Sort.by(sort).descending() : Sort.by(sort).ascending();
-        Pageable paging = PageRequest.of(page, size, pageSort);
-
+    public Page<Comment> getPostComments(long postId, boolean visible, int page, int size, String sort, String directory) {
+        Pageable paging = PageableUtils.createPageable(page, size, sort, directory);
         return commentRepository.findAllByPostIdAndVisible(postId, visible, paging);
     }
 
