@@ -41,4 +41,14 @@ public class Advertisement {
 
     @Builder.Default
     private boolean active = true;
+
+    public void addReaction(Reaction reaction) {
+        reactions.add(reaction);
+        reaction.getAdvertisementList().add(this);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setAdvertisement(this);
+    }
 }

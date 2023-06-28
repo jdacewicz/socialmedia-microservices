@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.jdacewicz.postservice.exception.RecordNotFoundException;
 import pl.jdacewicz.postservice.model.Advertisement;
+import pl.jdacewicz.postservice.model.Comment;
+import pl.jdacewicz.postservice.model.Reaction;
 import pl.jdacewicz.postservice.repository.AdvertisementRepository;
 import pl.jdacewicz.postservice.util.PageableUtils;
 
@@ -13,10 +15,12 @@ import pl.jdacewicz.postservice.util.PageableUtils;
 public class AdvertisementService {
 
     private final AdvertisementRepository advertisementRepository;
+    private final ReactionService reactionService;
 
     @Autowired
-    public AdvertisementService(AdvertisementRepository advertisementRepository) {
+    public AdvertisementService(AdvertisementRepository advertisementRepository, ReactionService reactionService) {
         this.advertisementRepository = advertisementRepository;
+        this.reactionService = reactionService;
     }
 
     public Advertisement getAdvertisementById(int id) {
@@ -35,5 +39,35 @@ public class AdvertisementService {
 
     public Advertisement createAdvertisement(Advertisement advertisement) {
         return advertisementRepository.save(advertisement);
+    }
+
+    public void reactToAdvertisement(int advertisementId, int reactionId) {
+        Reaction reaction = reactionService.getReactionById(reactionId);
+
+        advertisementRepository.findById(advertisementId)
+                .map(ad -> {
+                    ad.addReaction(reaction);
+                    return advertisementRepository.save(ad);
+                }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
+    }
+
+    public void commentAdvertisement(int advertisementId, Comment comment) {
+        advertisementRepository.findById(advertisementId)
+                .map(ad -> {
+                    ad.addComment(comment);
+                    return advertisementRepository.save(ad);
+                }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
+    }
+
+    public void updateAdvertisement(int id, Advertisement advertisement) {
+        advertisementRepository.findById(id).map(ad -> {
+            ad.setName(advertisement.getName());
+            ad.setContent(ad.getContent());
+            return advertisementRepository.save(ad);
+        }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+    }
+
+    public void deleteAdvertisement(int id) {
+        advertisementRepository.deleteById(id);
     }
 }
