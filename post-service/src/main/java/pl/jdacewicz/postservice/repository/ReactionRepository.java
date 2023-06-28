@@ -9,8 +9,6 @@ import pl.jdacewicz.postservice.model.Reaction;
 
 public interface ReactionRepository extends JpaRepository<Reaction, Integer> {
 
-    Page<Reaction> findAll(Pageable pageable);
-
     Page<Reaction> findAllByName(String name, Pageable pageable);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
