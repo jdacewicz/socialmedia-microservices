@@ -1,6 +1,7 @@
 package pl.jdacewicz.postservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.AdvertisementDto;
@@ -27,6 +28,17 @@ public class AdvertisementController {
     public AdvertisementDto getAdvertisementById(@PathVariable int id) {
         Advertisement advertisement = advertisementService.getAdvertisementById(id);
         return advertisementMapper.convertToDto(advertisement);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Page<AdvertisementDto> getAdvertisements(@RequestParam(required = false) String name,
+                                                    @RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "8") int size,
+                                                    @RequestParam(defaultValue = "id") String sort,
+                                                    @RequestParam(defaultValue = "ASC") String directory) {
+        return advertisementService.getAdvertisements(name, page, size, sort, directory)
+                .map(advertisementMapper::convertToDto);
     }
 
     @PostMapping
