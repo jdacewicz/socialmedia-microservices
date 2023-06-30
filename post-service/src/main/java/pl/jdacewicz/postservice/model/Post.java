@@ -43,6 +43,9 @@ public class Post {
     @Builder.Default
     private List<Comment> comments = new LinkedList<>();
 
+    @ManyToMany(mappedBy = "posts")
+    private List<PostGroup> postGroupList = new LinkedList<>();
+
     @Builder.Default
     private boolean visible = true;
 
