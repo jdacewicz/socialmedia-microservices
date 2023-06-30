@@ -1,54 +1,21 @@
 package pl.jdacewicz.postservice.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.LinkedList;
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "t_advertisements")
-public class Advertisement {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Advertisement extends Post{
 
     private String name;
 
-    private String content;
-
-    //img
-
-    @ManyToMany
-    @JoinTable(
-            name = "advertisements_reactions",
-            joinColumns = @JoinColumn(name = "advertisement_id"),
-            inverseJoinColumns = @JoinColumn(name = "reaction_id"))
-    @Builder.Default
-    private List<Reaction> reactions = new LinkedList<>();
-
-    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Comment> comments = new LinkedList<>();
-
-    @Builder.Default
     private boolean active = true;
-
-    public void addReaction(Reaction reaction) {
-        reactions.add(reaction);
-        reaction.getAdvertisementList().add(this);
-    }
-
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setAdvertisement(this);
-    }
 }
