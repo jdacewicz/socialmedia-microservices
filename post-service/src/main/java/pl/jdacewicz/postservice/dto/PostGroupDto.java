@@ -3,13 +3,13 @@ package pl.jdacewicz.postservice.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
-public class ReactionCountDto {
+public class PostGroupDto {
 
     private String name;
 
-    //img
-
-    private long count;
+    private Set<PostDto> posts;
 }

@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,5 +26,5 @@ public class PostGroup extends Group{
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     @Builder.Default
-    private Set<Post> posts = new HashSet<>();
+    private List<Post> posts = new LinkedList<>();
 }

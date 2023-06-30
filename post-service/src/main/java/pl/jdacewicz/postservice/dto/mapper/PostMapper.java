@@ -6,6 +6,10 @@ import pl.jdacewicz.postservice.dto.PostDto;
 import pl.jdacewicz.postservice.dto.PostRequest;
 import pl.jdacewicz.postservice.model.Post;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Component
 public class PostMapper {
 
@@ -29,6 +33,12 @@ public class PostMapper {
                         .limit(2)
                         .toList()))
                 .build();
+    }
+
+    public Set<PostDto> convertToDto(List<Post> postList) {
+        return postList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toSet());
     }
 
     public Post convertFromRequest(PostRequest postRequest) {
