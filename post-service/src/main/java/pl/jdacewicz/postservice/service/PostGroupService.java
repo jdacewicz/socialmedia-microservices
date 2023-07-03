@@ -20,4 +20,8 @@ public class PostGroupService {
         return postGroupRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
     }
+
+    public PostGroup createGroup(PostGroup postGroup) {
+        return postGroupRepository.save(postGroup);
+    }
 }

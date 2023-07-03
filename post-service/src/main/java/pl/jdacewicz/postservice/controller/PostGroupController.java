@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.PostGroupDto;
+import pl.jdacewicz.postservice.dto.PostGroupRequest;
 import pl.jdacewicz.postservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.postservice.model.PostGroup;
 import pl.jdacewicz.postservice.service.PostGroupService;
@@ -28,4 +29,11 @@ public class PostGroupController {
         return postGroupMapper.convertToDto(group);
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PostGroupDto createGroup(@RequestBody PostGroupRequest groupRequest) {
+        PostGroup group = postGroupMapper.convertFromRequest(groupRequest);
+        PostGroup createdGroup = postGroupService.createGroup(group);
+        return postGroupMapper.convertToDto(createdGroup);
+    }
 }
