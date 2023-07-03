@@ -24,4 +24,8 @@ public class PostGroupService {
     public PostGroup createGroup(PostGroup postGroup) {
         return postGroupRepository.save(postGroup);
     }
+
+    public void deleteGroup(long id) {
+        postGroupRepository.deleteById(id);
+    }
 }

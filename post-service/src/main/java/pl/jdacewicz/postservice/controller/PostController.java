@@ -66,11 +66,17 @@ public class PostController {
         postService.commentPost(postId, comment);
     }
 
-    @PutMapping("/{postId}/group/{groupId}")
+    @PutMapping("/{postId}/groups/{groupId}/add")
     @ResponseStatus(HttpStatus.OK)
     public void addPostToGroup(@PathVariable long postId,
                                @PathVariable long groupId) {
         postService.addPostToGroup(postId, groupId);
+    }
+    @PutMapping("/{postId}/groups/{groupId}/remove")
+    @ResponseStatus(HttpStatus.OK)
+    public void removePostFromGroup(@PathVariable long postId,
+                               @PathVariable long groupId) {
+        postService.removePostFromGroup(postId, groupId);
     }
 
     @DeleteMapping("/{id}")

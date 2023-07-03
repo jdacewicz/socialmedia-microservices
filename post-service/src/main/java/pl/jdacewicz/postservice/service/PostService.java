@@ -66,6 +66,16 @@ public class PostService {
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + groupId));
     }
 
+    public void removePostFromGroup(long postId, long groupId) {
+        PostGroup group = postGroupService.getPostGroupById(groupId);
+
+        postRepository.findById(postId)
+                .map(post -> {
+                    post.removePostGroup(group);
+                    return postRepository.save(post);
+                }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + groupId));
+    }
+
     public void deletePost(long id) {
         postRepository.deleteById(id);
     }

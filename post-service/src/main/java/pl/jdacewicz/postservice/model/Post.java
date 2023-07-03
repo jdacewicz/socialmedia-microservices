@@ -65,4 +65,9 @@ public class Post {
         postGroupList.add(postGroup);
         postGroup.getPosts().add(this);
     }
+
+    public void removePostGroup(PostGroup postGroup) {
+        postGroupList.remove(postGroup);
+        postGroup.getPosts().remove(this);
+    }
 }

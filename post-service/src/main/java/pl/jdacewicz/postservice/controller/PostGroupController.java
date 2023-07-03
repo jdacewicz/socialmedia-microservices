@@ -36,4 +36,10 @@ public class PostGroupController {
         PostGroup createdGroup = postGroupService.createGroup(group);
         return postGroupMapper.convertToDto(createdGroup);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteGroup(@PathVariable long id) {
+        postGroupService.deleteGroup(id);
+    }
 }
