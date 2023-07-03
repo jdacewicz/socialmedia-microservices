@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -44,7 +46,7 @@ public class Post {
     private List<Comment> comments = new LinkedList<>();
 
     @ManyToMany(mappedBy = "posts")
-    private List<PostGroup> postGroupList = new LinkedList<>();
+    private Set<PostGroup> postGroupList = new HashSet<>();
 
     @Builder.Default
     private boolean visible = true;
@@ -57,5 +59,10 @@ public class Post {
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setPost(this);
+    }
+
+    public void addPostGroup(PostGroup postGroup) {
+        postGroupList.add(postGroup);
+        postGroup.getPosts().add(this);
     }
 }
