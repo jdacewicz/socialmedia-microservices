@@ -3,6 +3,7 @@ package pl.jdacewicz.postservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.ReactionDto;
@@ -26,6 +27,7 @@ public class ReactionController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.OK)
     public ReactionDto getReaction(@PathVariable int id) {
         Reaction reaction = reactionService.getReactionById(id);
@@ -33,6 +35,7 @@ public class ReactionController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.OK)
     public Page<ReactionDto> getAllReactions(@RequestParam(required = false) String name,
                                              @RequestParam(defaultValue = "0") int page,
@@ -44,6 +47,7 @@ public class ReactionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('client_admin')")
     @ResponseStatus(HttpStatus.CREATED)
     public ReactionDto createReaction(@RequestBody ReactionRequest reactionRequest) {
         Reaction reaction = reactionMapper.convertFromRequest(reactionRequest);
@@ -52,6 +56,7 @@ public class ReactionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('client_admin')")
     @ResponseStatus(HttpStatus.OK)
     public void updateReaction(@PathVariable int id,
                                       @RequestBody ReactionRequest reactionRequest) {
@@ -60,6 +65,7 @@ public class ReactionController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('client_admin')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteReaction(@PathVariable int id) {
         reactionService.deleteReaction(id);

@@ -2,6 +2,7 @@ package pl.jdacewicz.postservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.PostGroupDto;
 import pl.jdacewicz.postservice.dto.PostGroupRequest;
@@ -23,6 +24,7 @@ public class PostGroupController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostGroupDto getPostGroupById(@PathVariable long id) {
         PostGroup group = postGroupService.getPostGroupById(id);
@@ -30,6 +32,7 @@ public class PostGroupController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostGroupDto createGroup(@RequestBody PostGroupRequest groupRequest) {
         PostGroup group = postGroupMapper.convertFromRequest(groupRequest);
@@ -38,6 +41,7 @@ public class PostGroupController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteGroup(@PathVariable long id) {
         postGroupService.deleteGroup(id);

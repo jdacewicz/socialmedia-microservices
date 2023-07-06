@@ -3,6 +3,7 @@ package pl.jdacewicz.postservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.postservice.dto.CommentDto;
@@ -25,6 +26,7 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto getVisibleCommentById(@PathVariable long id) {
         Comment comment = commentService.getVisibleCommentById(id);
@@ -32,6 +34,7 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.OK)
     public Page<CommentDto> getPostComments(@PathVariable long postId,
                                             @RequestParam(defaultValue = "true") boolean visible,
@@ -44,6 +47,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('client_admin')")
     @ResponseStatus(HttpStatus.OK)
     public void changePostVisibility(@PathVariable long id,
                                      @RequestParam boolean visible) {
@@ -51,6 +55,7 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}/react/{reactionId}")
+    @PreAuthorize("hasRole('client_user')")
     @ResponseStatus(HttpStatus.OK)
     public void reactToComment(@PathVariable long commentId,
                                @PathVariable int reactionId) {
@@ -58,6 +63,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('client_admin')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteComment(@PathVariable long id) {
         commentService.deleteComment(id);
