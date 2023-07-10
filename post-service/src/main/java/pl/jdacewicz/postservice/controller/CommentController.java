@@ -26,7 +26,7 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto getVisibleCommentById(@PathVariable long id) {
         Comment comment = commentService.getVisibleCommentById(id);
@@ -34,7 +34,7 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public Page<CommentDto> getPostComments(@PathVariable long postId,
                                             @RequestParam(defaultValue = "true") boolean visible,
@@ -47,7 +47,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void changePostVisibility(@PathVariable long id,
                                      @RequestParam boolean visible) {
@@ -55,7 +55,7 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}/react/{reactionId}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void reactToComment(@PathVariable long commentId,
                                @PathVariable int reactionId) {
@@ -63,7 +63,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteComment(@PathVariable long id) {
         commentService.deleteComment(id);

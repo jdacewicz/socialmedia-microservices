@@ -31,7 +31,7 @@ public class AdvertisementController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public AdvertisementDto getAdvertisementById(@PathVariable int id) {
         Advertisement advertisement = advertisementService.getAdvertisementById(id);
@@ -39,7 +39,7 @@ public class AdvertisementController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementDto> getAdvertisements(@RequestParam(required = false) String name,
                                                     @RequestParam(defaultValue = "0") int page,
@@ -51,7 +51,7 @@ public class AdvertisementController {
     }
 
     @PutMapping("/{advertisementId}/react/{reactionId}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void reactToPost(@PathVariable int advertisementId,
                             @PathVariable int reactionId) {
@@ -59,7 +59,7 @@ public class AdvertisementController {
     }
 
     @PutMapping("/{advertisementId}/comment")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void commentPost(@PathVariable int advertisementId,
                             @RequestBody CommentRequest commentRequest) {
@@ -68,7 +68,7 @@ public class AdvertisementController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
     public AdvertisementDto createAdvertisement(@RequestBody AdvertisementRequest advertisementRequest) {
         Advertisement advertisement = advertisementMapper.convertFromRequest(advertisementRequest);
@@ -77,7 +77,7 @@ public class AdvertisementController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void updateAdvertisement(@PathVariable int id,
                                     @RequestBody AdvertisementRequest advertisementRequest) {
@@ -86,7 +86,7 @@ public class AdvertisementController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable int id) {
         advertisementService.deleteAdvertisement(id);

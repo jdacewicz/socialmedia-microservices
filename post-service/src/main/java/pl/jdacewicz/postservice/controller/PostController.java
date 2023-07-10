@@ -31,7 +31,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public PostDto getPostById(@PathVariable long id) {
         Post post = postService.getVisiblePostById(id);
@@ -39,7 +39,7 @@ public class PostController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostDto createPost(@RequestBody PostRequest postRequest) {
         Post post = postMapper.convertFromRequest(postRequest);
@@ -48,7 +48,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void changePostVisibility(@PathVariable long id,
                                      @RequestParam boolean visible) {
@@ -56,7 +56,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/react/{reactionId}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void reactToPost(@PathVariable long postId,
                             @PathVariable int reactionId) {
@@ -64,7 +64,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/comment")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void commentPost(@PathVariable long postId,
                             @RequestBody CommentRequest commentRequest) {
@@ -73,14 +73,14 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/groups/{groupId}/add")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void addPostToGroup(@PathVariable long postId,
                                @PathVariable long groupId) {
         postService.addPostToGroup(postId, groupId);
     }
     @PutMapping("/{postId}/groups/{groupId}/remove")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void removePostFromGroup(@PathVariable long postId,
                                @PathVariable long groupId) {
@@ -88,7 +88,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable long id) {
         postService.deletePost(id);
