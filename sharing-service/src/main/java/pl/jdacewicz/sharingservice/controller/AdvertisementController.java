@@ -16,7 +16,8 @@ import pl.jdacewicz.sharingservice.service.AdvertisementService;
 import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
-@RequestMapping("/api/advertisements")
+@RequestMapping(value = "${spring.application.api-url}" + "/advertisements",
+        produces = {ApiVersion.V1_JSON})
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;

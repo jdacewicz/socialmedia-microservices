@@ -10,10 +10,12 @@ import pl.jdacewicz.sharingservice.dto.CommentDto;
 import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.service.CommentService;
+import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @Transactional
-@RequestMapping(value = "/api/comments", headers = "Accept=application/json")
+@RequestMapping(value = "${spring.application.api-url}" + "/comments",
+        produces = {ApiVersion.V1_JSON})
 public class CommentController {
 
     private final CommentService commentService;

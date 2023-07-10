@@ -9,9 +9,11 @@ import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.service.PostGroupService;
+import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
-@RequestMapping("/api/posts/groups")
+@RequestMapping(value = "${spring.application.api-url}" + "/groups",
+        produces = {ApiVersion.V1_JSON})
 public class PostGroupController {
 
     private final PostGroupService postGroupService;
@@ -24,7 +26,7 @@ public class PostGroupController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostGroupDto getPostGroupById(@PathVariable long id) {
         PostGroup group = postGroupService.getPostGroupById(id);
@@ -32,7 +34,7 @@ public class PostGroupController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostGroupDto createGroup(@RequestBody PostGroupRequest groupRequest) {
         PostGroup group = postGroupMapper.convertFromRequest(groupRequest);
@@ -41,7 +43,7 @@ public class PostGroupController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteGroup(@PathVariable long id) {
         postGroupService.deleteGroup(id);

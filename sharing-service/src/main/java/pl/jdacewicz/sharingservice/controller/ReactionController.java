@@ -11,10 +11,12 @@ import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.ReactionMapper;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.service.ReactionService;
+import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @Transactional
-@RequestMapping(value = "/api/reactions", headers = "Accept=application/json")
+@RequestMapping(value = "${spring.application.api-url}" + "/reactions",
+        produces = {ApiVersion.V1_JSON})
 public class ReactionController {
 
     private final ReactionService reactionService;
@@ -27,7 +29,7 @@ public class ReactionController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public ReactionDto getReaction(@PathVariable int id) {
         Reaction reaction = reactionService.getReactionById(id);
@@ -35,7 +37,7 @@ public class ReactionController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('client_user')")
+    @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public Page<ReactionDto> getAllReactions(@RequestParam(required = false) String name,
                                              @RequestParam(defaultValue = "0") int page,
@@ -47,7 +49,7 @@ public class ReactionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
     public ReactionDto createReaction(@RequestBody ReactionRequest reactionRequest) {
         Reaction reaction = reactionMapper.convertFromRequest(reactionRequest);
@@ -56,7 +58,7 @@ public class ReactionController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void updateReaction(@PathVariable int id,
                                       @RequestBody ReactionRequest reactionRequest) {
@@ -65,7 +67,7 @@ public class ReactionController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('client_admin')")
+    @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
     public void deleteReaction(@PathVariable int id) {
         reactionService.deleteReaction(id);

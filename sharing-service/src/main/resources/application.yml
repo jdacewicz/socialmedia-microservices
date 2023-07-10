@@ -9,7 +9,8 @@ spring:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   application:
-    name: post-service
+    name: sharing-service
+    api-url: /api/${spring.application.name}
   security:
     oauth2:
       resourceserver:

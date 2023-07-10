@@ -17,7 +17,8 @@ import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @Transactional
-@RequestMapping(value = "/api/posts", headers = "Accept=application/json")
+@RequestMapping(value = "${spring.application.api-url}" + "/posts",
+        produces = {ApiVersion.V1_JSON})
 public class PostController {
 
     private final PostService postService;
