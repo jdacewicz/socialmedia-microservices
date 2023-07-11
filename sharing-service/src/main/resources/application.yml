@@ -14,8 +14,15 @@ spring:
   security:
     oauth2:
       resourceserver:
+        keycloak:
+          server-url: http://localhost:8181
+          realm: YourSocietyRealm
+          client-id: api-gateway
+          admin:
+            username: admin
+            password: admin
         jwt:
-          issuer-uri: http://localhost:8181/realms/YourSocietyRealm
+          issuer-uri: ${spring.security.oauth2.resourceserver.keycloak.server-url}/realms/${spring.security.oauth2.resourceserver.keycloak.realm}
 eureka:
   client:
     service-url:
