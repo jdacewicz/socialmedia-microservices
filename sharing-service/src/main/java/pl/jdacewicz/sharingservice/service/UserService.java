@@ -32,13 +32,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void updateUser(String email) {
-        userRepository.findByEmail(email)
-                .map(user -> {
-//                    user.setImg();
-                    return userRepository.save(user);
+    public void updateUser(User user) {
+        userRepository.findByEmail(user.getEmail())
+                .map(u -> {
+                    u.setProfilePicture(user.getProfilePicture());
+                    return userRepository.save(u);
                 }).orElseGet(() -> userRepository.save(User.builder()
-                        .email(email)
+                        .email(user.getEmail())
+                        .profilePicture(user.getProfilePicture())
                         .build()));
+    }
+
+    public void deleteUserById(long id) {
+        userRepository.deleteById(id);
     }
 }

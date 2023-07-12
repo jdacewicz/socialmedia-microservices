@@ -15,12 +15,13 @@ public class UserMapper {
                 .email(user.getEmail())
                 .firstname(userRepresentation.getFirstName())
                 .lastname(userRepresentation.getLastName())
+                .profilePicture(user.getProfilePicture())
                 .build();
     }
 
     public User convertFromRequest(UserRequest userRequest) {
         return User.builder()
-                .email(userRequest.email())
+                .profilePicture(userRequest.profilePicture())
                 .build();
     }
 }

@@ -44,8 +44,11 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@RequestBody UserRequest userRequest) {
+    public UserDto createUser(@AuthenticationPrincipal Jwt jwt,
+                              @RequestBody UserRequest userRequest) {
         User user = userMapper.convertFromRequest(userRequest);
+        user.setEmail(jwt.getClaim("email"));
+
         User createdUser = userService.createUser(user);
         UserRepresentation userRepresentation = keycloakClientService.getUserByEmail(createdUser.getEmail());
         return userMapper.convertToDto(createdUser, userRepresentation);
@@ -54,8 +57,17 @@ public class UserController {
     @PutMapping
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
-    public void uploadProfilePicture(@AuthenticationPrincipal Jwt jwt) {
-        String email = jwt.getClaim("email");
-        userService.updateUser(email);
+    public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,
+                                     @RequestBody UserRequest userRequest) {
+        User user = userMapper.convertFromRequest(userRequest);
+        user.setEmail(jwt.getClaim("email"));
+        userService.updateUser(user);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('admin')")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser(@PathVariable long id) {
+        userService.deleteUserById(id);
     }
 }

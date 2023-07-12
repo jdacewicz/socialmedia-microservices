@@ -1,4 +1,4 @@
 package pl.jdacewicz.sharingservice.dto;
 
-public record UserRequest(String email) {
+public record UserRequest(String profilePicture) {
 }

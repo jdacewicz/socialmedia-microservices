@@ -11,5 +11,5 @@ public class UserDto {
     private String email;
     private String firstname;
     private String lastname;
-    //img
+    private String profilePicture;
 }
