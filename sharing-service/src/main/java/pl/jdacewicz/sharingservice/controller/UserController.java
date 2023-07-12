@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.sharingservice.dto.UserDto;
+import pl.jdacewicz.sharingservice.dto.UserRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.UserMapper;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.service.KeycloakClientService;
@@ -38,6 +39,16 @@ public class UserController {
         User user = userService.getUserById(id);
         UserRepresentation userRepresentation = keycloakClientService.getUserByEmail(user.getEmail());
         return userMapper.convertToDto(user, userRepresentation);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(@RequestBody UserRequest userRequest) {
+        User user = userMapper.convertFromRequest(userRequest);
+        User createdUser = userService.createUser(user);
+        UserRepresentation userRepresentation = keycloakClientService.getUserByEmail(createdUser.getEmail());
+        return userMapper.convertToDto(createdUser, userRepresentation);
     }
 
     @PutMapping

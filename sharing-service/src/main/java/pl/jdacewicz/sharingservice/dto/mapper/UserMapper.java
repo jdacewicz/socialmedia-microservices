@@ -3,6 +3,7 @@ package pl.jdacewicz.sharingservice.dto.mapper;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.UserDto;
+import pl.jdacewicz.sharingservice.dto.UserRequest;
 import pl.jdacewicz.sharingservice.model.User;
 
 @Component
@@ -14,6 +15,12 @@ public class UserMapper {
                 .email(user.getEmail())
                 .firstname(userRepresentation.getFirstName())
                 .lastname(userRepresentation.getLastName())
+                .build();
+    }
+
+    public User convertFromRequest(UserRequest userRequest) {
+        return User.builder()
+                .email(userRequest.email())
                 .build();
     }
 }
