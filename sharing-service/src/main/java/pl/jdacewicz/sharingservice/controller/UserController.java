@@ -48,10 +48,8 @@ public class UserController {
                               @RequestBody UserRequest userRequest) {
         User user = userMapper.convertFromRequest(userRequest);
         user.setEmail(jwt.getClaim("email"));
-
         User createdUser = userService.createUser(user);
-        UserRepresentation userRepresentation = keycloakClientService.getUserByEmail(createdUser.getEmail());
-        return userMapper.convertToDto(createdUser, userRepresentation);
+        return userMapper.convertToDto(createdUser, jwt);
     }
 
     @PutMapping

@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.dto.mapper;
 
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.UserDto;
 import pl.jdacewicz.sharingservice.dto.UserRequest;
@@ -15,6 +16,16 @@ public class UserMapper {
                 .email(user.getEmail())
                 .firstname(userRepresentation.getFirstName())
                 .lastname(userRepresentation.getLastName())
+                .profilePicture(user.getProfilePicture())
+                .build();
+    }
+
+    public UserDto convertToDto(User user, Jwt jwt) {
+        return UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstname(jwt.getClaim("given_name"))
+                .lastname(jwt.getClaim("family_name"))
                 .profilePicture(user.getProfilePicture())
                 .build();
     }
