@@ -4,10 +4,7 @@ import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
-import pl.jdacewicz.sharingservice.model.Comment;
-import pl.jdacewicz.sharingservice.model.Post;
-import pl.jdacewicz.sharingservice.model.PostGroup;
-import pl.jdacewicz.sharingservice.model.Reaction;
+import pl.jdacewicz.sharingservice.model.*;
 import pl.jdacewicz.sharingservice.repository.PostRepository;
 
 @Service
@@ -16,12 +13,15 @@ public class PostService {
     private final PostRepository postRepository;
     private final ReactionService reactionService;
     private final PostGroupService postGroupService;
+    private final UserService userService;
 
     @Autowired
-    public PostService(PostRepository postRepository, ReactionService reactionService, PostGroupService postGroupService) {
+    public PostService(PostRepository postRepository, ReactionService reactionService,
+                       PostGroupService postGroupService, UserService userService) {
         this.postRepository = postRepository;
         this.reactionService = reactionService;
         this.postGroupService = postGroupService;
+        this.userService = userService;
     }
 
     public Post getVisiblePostById(long id) {
@@ -29,7 +29,9 @@ public class PostService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
     }
 
-    public Post createPost(Post post) {
+    public Post createPost(String userEmail, Post post) {
+        User user = userService.getUserByEmail(userEmail);
+        post.setCreator(user);
         return postRepository.save(post);
     }
 

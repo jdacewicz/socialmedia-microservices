@@ -3,6 +3,8 @@ package pl.jdacewicz.sharingservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.sharingservice.dto.CommentRequest;
@@ -43,9 +45,11 @@ public class PostController {
     @PostMapping
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDto createPost(@RequestBody PostRequest postRequest) {
+    public PostDto createPost(@AuthenticationPrincipal Jwt jwt,
+                              @RequestBody PostRequest postRequest) {
         Post post = postMapper.convertFromRequest(postRequest);
-        Post createdPost = postService.createPost(post);
+        String userEmail = jwt.getClaim("email");
+        Post createdPost = postService.createPost(userEmail, post);
         return postMapper.convertToDto(createdPost);
     }
 

@@ -15,16 +15,19 @@ public class PostMapper {
 
     private final ReactionMapper reactionMapper;
     private final CommentMapper commentMapper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public PostMapper(ReactionMapper reactionMapper, CommentMapper commentMapper) {
+    public PostMapper(ReactionMapper reactionMapper, CommentMapper commentMapper, UserMapper userMapper) {
         this.reactionMapper = reactionMapper;
         this.commentMapper = commentMapper;
+        this.userMapper = userMapper;
     }
 
     public PostDto convertToDto(Post post) {
         return PostDto.builder()
                 .id(post.getId())
+                .creator(userMapper.convertToDto(post.getCreator()))
                 .creationTime(post.getCreationTime())
                 .content(post.getContent())
                 .reactions(reactionMapper.convertToCountDto(post.getReactions()))

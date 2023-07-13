@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.controller;
 
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,7 +10,6 @@ import pl.jdacewicz.sharingservice.dto.UserDto;
 import pl.jdacewicz.sharingservice.dto.UserRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.UserMapper;
 import pl.jdacewicz.sharingservice.model.User;
-import pl.jdacewicz.sharingservice.service.KeycloakClientService;
 import pl.jdacewicz.sharingservice.service.UserService;
 import pl.jdacewicz.sharingservice.util.ApiVersion;
 
@@ -21,14 +19,11 @@ import pl.jdacewicz.sharingservice.util.ApiVersion;
 public class UserController {
 
     private final UserService userService;
-    private final KeycloakClientService keycloakClientService;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService, KeycloakClientService keycloakClientService,
-                          UserMapper userMapper) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
-        this.keycloakClientService = keycloakClientService;
         this.userMapper = userMapper;
     }
 
@@ -37,8 +32,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable long id) {
         User user = userService.getUserById(id);
-        UserRepresentation userRepresentation = keycloakClientService.getUserByEmail(user.getEmail());
-        return userMapper.convertToDto(user, userRepresentation);
+        return userMapper.convertToDto(user);
     }
 
     @PostMapping

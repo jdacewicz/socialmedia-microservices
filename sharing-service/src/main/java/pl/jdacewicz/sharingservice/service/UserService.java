@@ -24,6 +24,11 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find user with id: " + id));
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotUniqueDataException("Could not find user with email: " + email));
+    }
+
     public User createUser(User user) {
         Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
         if (foundUser.isPresent()) {

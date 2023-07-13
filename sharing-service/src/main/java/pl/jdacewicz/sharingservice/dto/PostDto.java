@@ -15,12 +15,12 @@ public class PostDto {
 
     private long id;
 
-    //UserDto
-
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd-MM-yyyy")
     private LocalDateTime creationTime;
+
+    private UserDto creator;
 
     private List<ReactionCountDto> reactions;
 
