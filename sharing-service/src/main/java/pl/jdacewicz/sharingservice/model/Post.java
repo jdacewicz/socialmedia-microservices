@@ -31,7 +31,9 @@ public class Post {
 
     //image
 
-    //User creator
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
 
     @ManyToMany
     @JoinTable(

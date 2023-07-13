@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Entity
 @Data
 @Builder
@@ -22,4 +25,8 @@ public class User {
     private String email;
 
     private String profilePicture;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Post> posts = new LinkedList<>();
 }
