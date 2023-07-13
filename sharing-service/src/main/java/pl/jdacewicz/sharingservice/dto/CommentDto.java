@@ -18,5 +18,7 @@ public class CommentDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd-MM-yyyy")
     private LocalDateTime creationTime;
 
+    private UserDto creator;
+
     private List<ReactionCountDto> reactions;
 }

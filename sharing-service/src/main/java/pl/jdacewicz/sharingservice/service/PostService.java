@@ -50,7 +50,9 @@ public class PostService {
         }).orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + postId));
     }
 
-    public void commentPost(long postId, Comment comment) {
+    public void commentPost(String userEmail, long postId, Comment comment) {
+        User user = userService.getUserByEmail(userEmail);
+        comment.setCreator(user);
         postRepository.findById(postId)
                 .map(post -> {
                     post.addComment(comment);

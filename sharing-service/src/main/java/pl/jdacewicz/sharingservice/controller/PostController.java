@@ -72,10 +72,12 @@ public class PostController {
     @PutMapping("/{postId}/comment")
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
-    public void commentPost(@PathVariable long postId,
+    public void commentPost(@AuthenticationPrincipal Jwt jwt,
+                            @PathVariable long postId,
                             @RequestBody CommentRequest commentRequest) {
         Comment comment = commentMapper.convertFromRequest(commentRequest);
-        postService.commentPost(postId, comment);
+        String userEmail = jwt.getClaim("email");
+        postService.commentPost(userEmail, postId, comment);
     }
 
     @PutMapping("/{postId}/groups/{groupId}/add")

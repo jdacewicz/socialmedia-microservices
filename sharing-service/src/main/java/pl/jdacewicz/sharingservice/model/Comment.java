@@ -26,7 +26,9 @@ public class Comment {
 
     //img
 
-    //creator User
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
 
     @ManyToOne
     @JoinColumn(name="post_id")

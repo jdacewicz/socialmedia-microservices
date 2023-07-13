@@ -12,14 +12,17 @@ import java.util.List;
 public class CommentMapper {
 
     private final ReactionMapper reactionMapper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public CommentMapper(ReactionMapper reactionMapper) {
+    public CommentMapper(ReactionMapper reactionMapper, UserMapper userMapper) {
         this.reactionMapper = reactionMapper;
+        this.userMapper = userMapper;
     }
 
     public CommentDto convertToDto(Comment comment) {
         return CommentDto.builder()
+                .creator(userMapper.convertToDto(comment.getCreator()))
                 .creationTime(comment.getCreationTime())
                 .reactions(reactionMapper.convertToCountDto(comment.getReactions()))
                 .content(comment.getContent())
