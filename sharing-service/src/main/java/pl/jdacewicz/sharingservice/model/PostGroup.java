@@ -18,7 +18,9 @@ import java.util.List;
 @Table(name = "t_posts_groups")
 public class PostGroup extends Group{
 
-    //Creator
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
 
     @ManyToMany
     @JoinTable(

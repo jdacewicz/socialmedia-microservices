@@ -11,5 +11,7 @@ public class PostGroupDto {
 
     private String name;
 
+    private UserDto creator;
+
     private Set<PostDto> posts;
 }

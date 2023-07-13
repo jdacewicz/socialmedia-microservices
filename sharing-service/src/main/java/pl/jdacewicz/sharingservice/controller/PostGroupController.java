@@ -3,6 +3,8 @@ package pl.jdacewicz.sharingservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
 import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
@@ -12,7 +14,7 @@ import pl.jdacewicz.sharingservice.service.PostGroupService;
 import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
-@RequestMapping(value = "${spring.application.api-url}" + "/groups",
+@RequestMapping(value = "${spring.application.api-url}" + "/posts/groups",
         produces = {ApiVersion.V1_JSON})
 public class PostGroupController {
 
@@ -36,9 +38,11 @@ public class PostGroupController {
     @PostMapping
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostGroupDto createGroup(@RequestBody PostGroupRequest groupRequest) {
+    public PostGroupDto createGroup(@AuthenticationPrincipal Jwt jwt,
+                                    @RequestBody PostGroupRequest groupRequest) {
         PostGroup group = postGroupMapper.convertFromRequest(groupRequest);
-        PostGroup createdGroup = postGroupService.createGroup(group);
+        String userEmail = jwt.getClaim("email");
+        PostGroup createdGroup = postGroupService.createGroup(userEmail, group);
         return postGroupMapper.convertToDto(createdGroup);
     }
 

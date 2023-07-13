@@ -10,15 +10,18 @@ import pl.jdacewicz.sharingservice.model.PostGroup;
 public class PostGroupMapper {
 
     private final PostMapper postMapper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public PostGroupMapper(PostMapper postMapper) {
+    public PostGroupMapper(PostMapper postMapper, UserMapper userMapper) {
         this.postMapper = postMapper;
+        this.userMapper = userMapper;
     }
 
     public PostGroupDto convertToDto(PostGroup group) {
         return PostGroupDto.builder()
                 .name(group.getName())
+                .creator(userMapper.convertToDto(group.getCreator()))
                 .posts(postMapper.convertToDto(group.getPosts()))
                 .build();
     }
