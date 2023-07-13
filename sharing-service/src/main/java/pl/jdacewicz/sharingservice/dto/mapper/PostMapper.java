@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.dto.mapper;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.PostDto;
@@ -29,7 +30,7 @@ public class PostMapper {
                 .id(post.getId())
                 .creator(userMapper.convertToDto(post.getCreator()))
                 .creationTime(post.getCreationTime())
-                .content(post.getContent())
+                .content(EmojiParser.parseToUnicode(post.getContent()))
                 .reactions(reactionMapper.convertToCountDto(post.getReactions()))
                 .comments(commentMapper.convertToDto(post.getComments()
                         .stream()

@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.dto.mapper;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.AdvertisementDto;
@@ -28,7 +29,7 @@ public class AdvertisementMapper {
     public AdvertisementDto convertToDto(Advertisement createdAdvertisement) {
         return AdvertisementDto.builder()
                 .name(createdAdvertisement.getName())
-                .content(createdAdvertisement.getContent())
+                .content(EmojiParser.parseToUnicode(createdAdvertisement.getContent()))
                 .reactions(reactionMapper.convertToCountDto(createdAdvertisement.getReactions()))
                 .comments(commentMapper.convertToDto(createdAdvertisement.getComments()
                         .stream()

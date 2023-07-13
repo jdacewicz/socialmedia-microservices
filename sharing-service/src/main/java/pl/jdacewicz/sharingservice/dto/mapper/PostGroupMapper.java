@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.dto.mapper;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
@@ -20,7 +21,7 @@ public class PostGroupMapper {
 
     public PostGroupDto convertToDto(PostGroup group) {
         return PostGroupDto.builder()
-                .name(group.getName())
+                .name(EmojiParser.parseToUnicode(group.getName()))
                 .creator(userMapper.convertToDto(group.getCreator()))
                 .posts(postMapper.convertToDto(group.getPosts()))
                 .build();

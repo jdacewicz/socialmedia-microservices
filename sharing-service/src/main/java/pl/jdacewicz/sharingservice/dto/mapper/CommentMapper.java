@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.dto.mapper;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.CommentDto;
@@ -25,7 +26,7 @@ public class CommentMapper {
                 .creator(userMapper.convertToDto(comment.getCreator()))
                 .creationTime(comment.getCreationTime())
                 .reactions(reactionMapper.convertToCountDto(comment.getReactions()))
-                .content(comment.getContent())
+                .content(EmojiParser.parseToUnicode(comment.getContent()))
                 .build();
     }
 
