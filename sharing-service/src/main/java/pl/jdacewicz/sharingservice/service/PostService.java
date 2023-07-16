@@ -29,9 +29,13 @@ public class PostService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
     }
 
-    public Post createPost(String userEmail, Post post) {
+    public Post createPost(String userEmail, String content, String imageFileName) {
         User user = userService.getUserByEmail(userEmail);
-        post.setCreator(user);
+        Post post = Post.builder()
+                .creator(user)
+                .content(content)
+                .image(imageFileName)
+                .build();
         return postRepository.save(post);
     }
 
@@ -46,16 +50,6 @@ public class PostService {
        postRepository.findById(postId)
                .map(post -> {
                     post.addReaction(reaction);
-                    return postRepository.save(post);
-        }).orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + postId));
-    }
-
-    public void commentPost(String userEmail, long postId, Comment comment) {
-        User user = userService.getUserByEmail(userEmail);
-        comment.setCreator(user);
-        postRepository.findById(postId)
-                .map(post -> {
-                    post.addComment(comment);
                     return postRepository.save(post);
         }).orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + postId));
     }

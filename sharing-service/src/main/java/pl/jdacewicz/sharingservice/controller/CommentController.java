@@ -5,12 +5,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.CommentDto;
 import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.service.CommentService;
+import pl.jdacewicz.sharingservice.util.FileUtils;
+
+import java.beans.Transient;
+import java.io.IOException;
 
 @RestController
 @Transactional
@@ -47,6 +54,35 @@ public class CommentController {
                                             @RequestParam(defaultValue = "ASC") String directory) {
         return commentService.getPostComments(postId, visible, page, size, sort, directory)
                 .map(commentMapper::convertToDto);
+    }
+
+    @PostMapping("/posts/{postId}")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    @Transient
+    public CommentDto commentPost(@AuthenticationPrincipal Jwt jwt,
+                            @PathVariable long postId,
+                            @RequestPart String content,
+                            @RequestPart MultipartFile image) throws IOException {
+        String fileName = FileUtils.generateFileName(image.getOriginalFilename());
+        Comment comment = commentService.commentPost(jwt.getClaim("email"), postId, content, fileName);
+        FileUtils.saveFile(image, fileName, comment.getPost().getCommentsDirectoryPath());
+        return commentMapper.convertToDto(comment);
+    }
+
+    @PostMapping("/advertisements/{advertisementId}")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    @Transient
+    public CommentDto commentAdvertisement(@AuthenticationPrincipal Jwt jwt,
+                                  @PathVariable int advertisementId,
+                                  @RequestPart String content,
+                                  @RequestPart MultipartFile image) throws IOException {
+        String fileName = FileUtils.generateFileName(image.getOriginalFilename());
+        Comment comment = commentService.commentAdvertisement(jwt.getClaim("email"), advertisementId,
+                content, fileName);
+        FileUtils.saveFile(image, fileName, comment.getAdvertisement().getCommentsDirectoryPath());
+        return commentMapper.convertToDto(comment);
     }
 
     @PutMapping("/{id}")

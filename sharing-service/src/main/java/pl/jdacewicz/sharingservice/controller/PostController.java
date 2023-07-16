@@ -8,15 +8,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import pl.jdacewicz.sharingservice.dto.CommentRequest;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.PostDto;
-import pl.jdacewicz.sharingservice.dto.PostRequest;
-import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.dto.mapper.PostMapper;
-import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.service.PostService;
-import pl.jdacewicz.sharingservice.util.ApiVersion;
+import pl.jdacewicz.sharingservice.util.FileUtils;
+
+import java.beans.Transient;
+import java.io.IOException;
 
 @RestController
 @Transactional
@@ -27,13 +27,11 @@ public class PostController {
 
     private final PostService postService;
     private final PostMapper postMapper;
-    private final CommentMapper commentMapper;
 
     @Autowired
-    public PostController(PostService postService, PostMapper postMapper, CommentMapper commentMapper) {
+    public PostController(PostService postService, PostMapper postMapper) {
         this.postService = postService;
         this.postMapper = postMapper;
-        this.commentMapper = commentMapper;
     }
 
     @GetMapping("/{id}")
@@ -44,14 +42,18 @@ public class PostController {
         return postMapper.convertToDto(post);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
+    @Transient
     public PostDto createPost(@AuthenticationPrincipal Jwt jwt,
-                              @RequestBody PostRequest postRequest) {
-        Post post = postMapper.convertFromRequest(postRequest);
+                              @RequestPart String content,
+                              @RequestPart MultipartFile image) throws IOException {
         String userEmail = jwt.getClaim("email");
-        Post createdPost = postService.createPost(userEmail, post);
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+        Post createdPost = postService.createPost(userEmail, content, newFileName);
+
+        FileUtils.saveFile(image, newFileName, createdPost.getDirectoryPath());
         return postMapper.convertToDto(createdPost);
     }
 
@@ -69,17 +71,6 @@ public class PostController {
     public void reactToPost(@PathVariable long postId,
                             @PathVariable int reactionId) {
         postService.reactToPost(postId, reactionId);
-    }
-
-    @PutMapping("/{postId}/comment")
-    @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
-    public void commentPost(@AuthenticationPrincipal Jwt jwt,
-                            @PathVariable long postId,
-                            @RequestBody CommentRequest commentRequest) {
-        Comment comment = commentMapper.convertFromRequest(commentRequest);
-        String userEmail = jwt.getClaim("email");
-        postService.commentPost(userEmail, postId, comment);
     }
 
     @PutMapping("/{postId}/groups/{groupId}/add")

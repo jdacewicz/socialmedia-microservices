@@ -4,7 +4,6 @@ import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.PostDto;
-import pl.jdacewicz.sharingservice.dto.PostRequest;
 import pl.jdacewicz.sharingservice.model.Post;
 
 import java.util.List;
@@ -31,6 +30,7 @@ public class PostMapper {
                 .creator(userMapper.convertToDto(post.getCreator()))
                 .creationTime(post.getCreationTime())
                 .content(EmojiParser.parseToUnicode(post.getContent()))
+                .imagePath(post.getImagePath())
                 .reactions(reactionMapper.convertToCountDto(post.getReactions()))
                 .comments(commentMapper.convertToDto(post.getComments()
                         .stream()
@@ -43,11 +43,5 @@ public class PostMapper {
         return postList.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toSet());
-    }
-
-    public Post convertFromRequest(PostRequest postRequest) {
-        return Post.builder()
-                .content(postRequest.content())
-                .build();
     }
 }

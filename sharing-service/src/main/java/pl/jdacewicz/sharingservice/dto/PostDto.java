@@ -17,6 +17,8 @@ public class PostDto {
 
     private String content;
 
+    private String imagePath;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd-MM-yyyy")
     private LocalDateTime creationTime;
 

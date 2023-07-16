@@ -17,6 +17,10 @@ public class AdvertisementDto {
 
    private String content;
 
+   private String imagePath;
+
+   private UserDto creator;
+
    private List<ReactionCountDto> reactions;
 
    private List<CommentDto> comments;
