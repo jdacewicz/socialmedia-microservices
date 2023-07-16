@@ -3,6 +3,7 @@ package pl.jdacewicz.sharingservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,12 @@ import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.ReactionMapper;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.service.ReactionService;
-import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/reactions",
-        produces = {ApiVersion.V1_JSON})
+        headers = "X-API-VERSION=1",
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class ReactionController {
 
     private final ReactionService reactionService;

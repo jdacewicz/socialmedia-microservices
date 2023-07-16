@@ -3,6 +3,7 @@ package pl.jdacewicz.sharingservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -10,12 +11,12 @@ import pl.jdacewicz.sharingservice.dto.CommentDto;
 import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.service.CommentService;
-import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/comments",
-        produces = {ApiVersion.V1_JSON})
+        headers = "X-API-VERSION=1",
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class CommentController {
 
     private final CommentService commentService;

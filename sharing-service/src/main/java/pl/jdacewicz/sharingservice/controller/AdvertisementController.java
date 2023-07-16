@@ -3,21 +3,21 @@ package pl.jdacewicz.sharingservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.jdacewicz.sharingservice.dto.AdvertisementDto;
-import pl.jdacewicz.sharingservice.dto.AdvertisementRequest;
 import pl.jdacewicz.sharingservice.dto.CommentRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.AdvertisementMapper;
 import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.model.Advertisement;
 import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.service.AdvertisementService;
-import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @RequestMapping(value = "${spring.application.api-url}" + "/advertisements",
-        produces = {ApiVersion.V1_JSON})
+        headers = "X-API-VERSION=1",
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;

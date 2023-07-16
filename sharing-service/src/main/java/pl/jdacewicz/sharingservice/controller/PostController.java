@@ -2,6 +2,7 @@ package pl.jdacewicz.sharingservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,7 +21,8 @@ import pl.jdacewicz.sharingservice.util.ApiVersion;
 @RestController
 @Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/posts",
-        produces = {ApiVersion.V1_JSON})
+        headers = "X-API-VERSION=1",
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class PostController {
 
     private final PostService postService;

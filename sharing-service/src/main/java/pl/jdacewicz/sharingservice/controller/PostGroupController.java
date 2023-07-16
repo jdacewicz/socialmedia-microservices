@@ -2,6 +2,7 @@ package pl.jdacewicz.sharingservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -11,11 +12,11 @@ import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.service.PostGroupService;
-import pl.jdacewicz.sharingservice.util.ApiVersion;
 
 @RestController
 @RequestMapping(value = "${spring.application.api-url}" + "/posts/groups",
-        produces = {ApiVersion.V1_JSON})
+        headers = "X-API-VERSION=1",
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class PostGroupController {
 
     private final PostGroupService postGroupService;
