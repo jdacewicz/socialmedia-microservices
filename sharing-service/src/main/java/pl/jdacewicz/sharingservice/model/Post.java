@@ -20,6 +20,8 @@ import java.util.Set;
 @Table(name = "t_posts")
 public class Post {
 
+    public static final String POSTS_DIRECTORY_PATH = "uploads/posts";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -29,7 +31,7 @@ public class Post {
 
     private String content;
 
-    //image
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -52,6 +54,21 @@ public class Post {
 
     @Builder.Default
     private boolean visible = true;
+
+    public String getImagePath() {
+        if (image == null) {
+            return null;
+        }
+        return getDirectoryPath() + "/" + image;
+    }
+
+    public String getCommentsDirectoryPath() {
+        return getDirectoryPath() + "/comments";
+    }
+
+    public String getDirectoryPath() {
+        return POSTS_DIRECTORY_PATH + "/" + id;
+    }
 
     public void addReaction(Reaction reaction) {
         reactions.add(reaction);

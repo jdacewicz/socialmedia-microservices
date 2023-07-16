@@ -18,13 +18,15 @@ import java.util.List;
 @Table(name = "t_comments")
 public class Comment {
 
+    public static final String COMMENTS_DIRECTORY_PATH = "uploads/comments";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String content;
 
-    //img
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -51,6 +53,13 @@ public class Comment {
 
     @Builder.Default
     private boolean visible = true;
+
+    public String getImagePath() {
+        if (image == null) {
+            return null;
+        }
+        return "/" + COMMENTS_DIRECTORY_PATH + "/" + id + "/" + image;
+    }
 
     public void addReaction(Reaction reaction) {
         reactions.add(reaction);
