@@ -17,6 +17,8 @@ import java.util.List;
 @Table(name = "t_users")
 public class User {
 
+    public static final String USERS_DIRECTORY_PATH = "uploads/profiles";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -29,4 +31,15 @@ public class User {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Post> posts = new LinkedList<>();
+
+    public String getImagePath() {
+        if (profilePicture == null) {
+            return null;
+        }
+        return getDirectoryPath() + "/" + profilePicture;
+    }
+
+    public String getDirectoryPath() {
+        return USERS_DIRECTORY_PATH + "/" + id;
+    }
 }

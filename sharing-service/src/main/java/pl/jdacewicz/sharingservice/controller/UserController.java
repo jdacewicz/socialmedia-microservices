@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -7,13 +8,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.UserDto;
-import pl.jdacewicz.sharingservice.dto.UserRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.UserMapper;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.service.UserService;
 
+import java.io.IOException;
+
 @RestController
+@Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/users",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,10 +44,8 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@AuthenticationPrincipal Jwt jwt,
-                              @RequestBody UserRequest userRequest) {
-        User user = userMapper.convertFromRequest(userRequest);
-        user.setEmail(jwt.getClaim("email"));
-        User createdUser = userService.createUser(user);
+                              @RequestPart MultipartFile profileImage) throws IOException {
+        User createdUser = userService.createUser(jwt.getClaim("email"), profileImage);
         return userMapper.convertToDto(createdUser, jwt);
     }
 
@@ -51,10 +53,8 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,
-                                     @RequestBody UserRequest userRequest) {
-        User user = userMapper.convertFromRequest(userRequest);
-        user.setEmail(jwt.getClaim("email"));
-        userService.updateUser(user);
+                                     @RequestPart MultipartFile profilePicture) throws IOException {
+       userService.updateProfilePicture(jwt.getClaim("email"), profilePicture);
     }
 
     @DeleteMapping("/{id}")

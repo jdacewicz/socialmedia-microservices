@@ -1,13 +1,15 @@
 package pl.jdacewicz.sharingservice.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.jdacewicz.sharingservice.exception.NotUniqueDataException;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.UserRepository;
+import pl.jdacewicz.sharingservice.util.FileUtils;
 
-import java.util.Optional;
+import java.io.IOException;
 
 @Service
 public class UserService {
@@ -26,26 +28,27 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotUniqueDataException("Could not find user with email: " + email));
+                .orElseThrow(() -> new RecordNotFoundException("Could not find user with email: " + email));
     }
 
-    public User createUser(User user) {
-        Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
-        if (foundUser.isPresent()) {
-            throw new NotUniqueDataException("User with email: " + user.getEmail() + " already exist.");
-        }
-        return userRepository.save(user);
+    @Transient
+    public User createUser(String userEmail, MultipartFile profilePicture) throws IOException {
+        String newFileName = FileUtils.generateFileName(profilePicture.getOriginalFilename());
+
+        User user = User.builder()
+                .email(userEmail)
+                .profilePicture(newFileName)
+                .build();
+        User createdUser = userRepository.save(user);
+
+        FileUtils.saveFile(profilePicture, newFileName, createdUser.getDirectoryPath());
+        return createdUser;
     }
 
-    public void updateUser(User user) {
-        userRepository.findByEmail(user.getEmail())
-                .map(u -> {
-                    u.setProfilePicture(user.getProfilePicture());
-                    return userRepository.save(u);
-                }).orElseGet(() -> userRepository.save(User.builder()
-                        .email(user.getEmail())
-                        .profilePicture(user.getProfilePicture())
-                        .build()));
+    public void updateProfilePicture(String userEmail, MultipartFile profilePicture) throws IOException {
+        User user = getUserByEmail(userEmail);
+
+        FileUtils.saveFile(profilePicture, user.getProfilePicture(), user.getDirectoryPath());
     }
 
     public void deleteUserById(long id) {
