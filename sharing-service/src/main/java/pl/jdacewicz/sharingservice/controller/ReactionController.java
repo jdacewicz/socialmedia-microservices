@@ -12,9 +12,7 @@ import pl.jdacewicz.sharingservice.dto.ReactionDto;
 import pl.jdacewicz.sharingservice.dto.mapper.ReactionMapper;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.service.ReactionService;
-import pl.jdacewicz.sharingservice.util.FileUtils;
 
-import java.beans.Transient;
 import java.io.IOException;
 
 @RestController
@@ -56,26 +54,19 @@ public class ReactionController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transient
     public ReactionDto createReaction(@RequestPart String name,
                                       @RequestPart MultipartFile image) throws IOException {
-        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
-        Reaction createdReaction = reactionService.createReaction(name, newFileName);
-
-        FileUtils.saveFile(image, newFileName, createdReaction.getDirectoryPath());
+        Reaction createdReaction = reactionService.createReaction(name, image);
         return reactionMapper.convertToDto(createdReaction);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    @Transient
     public ReactionDto updateReaction(@PathVariable int id,
                                       @RequestPart String name,
                                       @RequestPart MultipartFile image) throws IOException {
-        Reaction updatedReaction = reactionService.updateReaction(id, name);
-
-        FileUtils.saveFile(image, updatedReaction.getImage(), updatedReaction.getDirectoryPath());
+        Reaction updatedReaction = reactionService.updateReaction(id, name, image);
         return reactionMapper.convertToDto(updatedReaction);
     }
 

@@ -1,11 +1,16 @@
 package pl.jdacewicz.sharingservice.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.PostGroupRepository;
+import pl.jdacewicz.sharingservice.util.FileUtils;
+
+import java.io.IOException;
 
 @Service
 public class PostGroupService {
@@ -24,22 +29,32 @@ public class PostGroupService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
     }
 
-    public PostGroup createGroup(String userEmail, String name, String fileName) {
+    @Transient
+    public PostGroup createGroup(String userEmail, String name, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+
         PostGroup postGroup = PostGroup.builder()
                 .name(name)
-                .image(fileName)
+                .image(newFileName)
                 .creator(user)
                 .build();
-        return postGroupRepository.save(postGroup);
+        PostGroup createdGroup = postGroupRepository.save(postGroup);
+
+        FileUtils.saveFile(image, newFileName, createdGroup.getDirectoryPath());
+        return createdGroup;
     }
 
-    public PostGroup updateGroup(long id, String name) {
-        return postGroupRepository.findById(id)
+    @Transient
+    public PostGroup updateGroup(long id, String name, MultipartFile image) throws IOException {
+        PostGroup postGroup = postGroupRepository.findById(id)
                 .map(group -> {
                     group.setName(name);
-                    return postGroupRepository.save(group);
+                    return group;
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
+
+        FileUtils.saveFile(image, postGroup.getImage(), postGroup.getDirectoryPath());
+        return postGroupRepository.save(postGroup);
     }
 
     public void deleteGroup(long id) {

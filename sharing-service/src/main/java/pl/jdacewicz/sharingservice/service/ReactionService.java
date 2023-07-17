@@ -1,13 +1,18 @@
 package pl.jdacewicz.sharingservice.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.repository.ReactionRepository;
+import pl.jdacewicz.sharingservice.util.FileUtils;
 import pl.jdacewicz.sharingservice.util.PageableUtils;
+
+import java.io.IOException;
 
 @Service
 public class ReactionService {
@@ -33,19 +38,30 @@ public class ReactionService {
         }
     }
 
-    public Reaction createReaction(String name, String newFileName) {
+    @Transient
+    public Reaction createReaction(String name, MultipartFile image) throws IOException {
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+
         Reaction reaction = Reaction.builder()
                 .name(name)
                 .image(newFileName)
                 .build();
-        return reactionRepository.save(reaction);
+        Reaction createdReaction = reactionRepository.save(reaction);
+
+        FileUtils.saveFile(image, newFileName, createdReaction.getDirectoryPath());
+        return createdReaction;
     }
 
-    public Reaction updateReaction(int id, String name) {
-        return reactionRepository.findById(id).map(reaction -> {
-            reaction.setName(name);
-            return reactionRepository.save(reaction);
-        }).orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
+    @Transient
+    public Reaction updateReaction(int id, String name, MultipartFile image) throws IOException {
+        Reaction reaction = reactionRepository.findById(id)
+                .map(r -> {
+                    r.setName(name);
+                    return r;
+                }).orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
+
+        FileUtils.saveFile(image, reaction.getImage(), reaction.getDirectoryPath());
+        return reactionRepository.save(reaction);
     }
 
     public void deleteReaction(int id) {

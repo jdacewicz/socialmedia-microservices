@@ -13,9 +13,7 @@ import pl.jdacewicz.sharingservice.dto.PostGroupDto;
 import pl.jdacewicz.sharingservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.service.PostGroupService;
-import pl.jdacewicz.sharingservice.util.FileUtils;
 
-import java.beans.Transient;
 import java.io.IOException;
 
 @RestController
@@ -45,28 +43,20 @@ public class PostGroupController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transient
     public PostGroupDto createGroup(@AuthenticationPrincipal Jwt jwt,
                                     @RequestPart String name,
                                     @RequestPart MultipartFile image) throws IOException {
-        String userEmail = jwt.getClaim("email");
-        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
-        PostGroup createdGroup = postGroupService.createGroup(userEmail, name, newFileName);
-
-        FileUtils.saveFile(image, newFileName, createdGroup.getDirectoryPath());
+        PostGroup createdGroup = postGroupService.createGroup(jwt.getClaim("email"), name, image);
         return postGroupMapper.convertToDto(createdGroup);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
-    @Transient
     public PostGroupDto updateGroup(@PathVariable long id,
                                     @RequestPart String name,
                                     @RequestPart MultipartFile image) throws IOException {
-        PostGroup updatedGroup = postGroupService.updateGroup(id, name);
-
-        FileUtils.saveFile(image, updatedGroup.getImage(), updatedGroup.getDirectoryPath());
+        PostGroup updatedGroup = postGroupService.updateGroup(id, name, image);
         return postGroupMapper.convertToDto(updatedGroup);
     }
 

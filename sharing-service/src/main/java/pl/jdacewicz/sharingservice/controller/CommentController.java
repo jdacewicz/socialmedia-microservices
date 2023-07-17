@@ -14,9 +14,7 @@ import pl.jdacewicz.sharingservice.dto.CommentDto;
 import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.service.CommentService;
-import pl.jdacewicz.sharingservice.util.FileUtils;
 
-import java.beans.Transient;
 import java.io.IOException;
 
 @RestController
@@ -59,29 +57,22 @@ public class CommentController {
     @PostMapping("/posts/{postId}")
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
-    @Transient
     public CommentDto commentPost(@AuthenticationPrincipal Jwt jwt,
                             @PathVariable long postId,
                             @RequestPart String content,
                             @RequestPart MultipartFile image) throws IOException {
-        String fileName = FileUtils.generateFileName(image.getOriginalFilename());
-        Comment comment = commentService.commentPost(jwt.getClaim("email"), postId, content, fileName);
-        FileUtils.saveFile(image, fileName, comment.getPost().getCommentsDirectoryPath());
+        Comment comment = commentService.commentPost(jwt.getClaim("email"), postId, content, image);
         return commentMapper.convertToDto(comment);
     }
 
     @PostMapping("/advertisements/{advertisementId}")
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
-    @Transient
     public CommentDto commentAdvertisement(@AuthenticationPrincipal Jwt jwt,
                                   @PathVariable int advertisementId,
                                   @RequestPart String content,
                                   @RequestPart MultipartFile image) throws IOException {
-        String fileName = FileUtils.generateFileName(image.getOriginalFilename());
-        Comment comment = commentService.commentAdvertisement(jwt.getClaim("email"), advertisementId,
-                content, fileName);
-        FileUtils.saveFile(image, fileName, comment.getAdvertisement().getCommentsDirectoryPath());
+        Comment comment = commentService.commentAdvertisement(jwt.getClaim("email"), advertisementId, content, image);
         return commentMapper.convertToDto(comment);
     }
 

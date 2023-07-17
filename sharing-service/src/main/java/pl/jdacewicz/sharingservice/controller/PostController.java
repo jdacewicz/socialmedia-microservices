@@ -13,9 +13,7 @@ import pl.jdacewicz.sharingservice.dto.PostDto;
 import pl.jdacewicz.sharingservice.dto.mapper.PostMapper;
 import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.service.PostService;
-import pl.jdacewicz.sharingservice.util.FileUtils;
 
-import java.beans.Transient;
 import java.io.IOException;
 
 @RestController
@@ -45,15 +43,11 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transient
     public PostDto createPost(@AuthenticationPrincipal Jwt jwt,
                               @RequestPart String content,
                               @RequestPart MultipartFile image) throws IOException {
         String userEmail = jwt.getClaim("email");
-        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
-        Post createdPost = postService.createPost(userEmail, content, newFileName);
-
-        FileUtils.saveFile(image, newFileName, createdPost.getDirectoryPath());
+        Post createdPost = postService.createPost(userEmail, content, image);
         return postMapper.convertToDto(createdPost);
     }
 

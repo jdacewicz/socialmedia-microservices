@@ -12,9 +12,7 @@ import pl.jdacewicz.sharingservice.dto.AdvertisementDto;
 import pl.jdacewicz.sharingservice.dto.mapper.AdvertisementMapper;
 import pl.jdacewicz.sharingservice.model.Advertisement;
 import pl.jdacewicz.sharingservice.service.AdvertisementService;
-import pl.jdacewicz.sharingservice.util.FileUtils;
 
-import java.beans.Transient;
 import java.io.IOException;
 
 @RestController
@@ -65,31 +63,23 @@ public class AdvertisementController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transient
     public AdvertisementDto createAdvertisement(@RequestPart String userEmail,
                                                 @RequestPart String name,
                                                 @RequestPart String content,
                                                 @RequestPart MultipartFile image) throws IOException {
-        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
-        Advertisement createdAd = advertisementService.createAdvertisement(userEmail, name, content,
-                newFileName);
-
-        FileUtils.saveFile(image, newFileName, createdAd.getDirectoryPath());
+        Advertisement createdAd = advertisementService.createAdvertisement(userEmail, name, content, image);
         return advertisementMapper.convertToDto(createdAd);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    @Transient
     public AdvertisementDto updateAdvertisement(@PathVariable int id,
                                                 @RequestPart String userEmail,
                                                 @RequestPart String name,
                                                 @RequestPart String content,
                                                 @RequestPart MultipartFile image) throws IOException {
-        Advertisement updatedAd = advertisementService.updateAdvertisement(userEmail, id, name ,content);
-
-        FileUtils.saveFile(image, updatedAd.getImage(), updatedAd.getDirectoryPath());
+        Advertisement updatedAd = advertisementService.updateAdvertisement(userEmail, id, name, content, image);
         return advertisementMapper.convertToDto(updatedAd);
     }
 

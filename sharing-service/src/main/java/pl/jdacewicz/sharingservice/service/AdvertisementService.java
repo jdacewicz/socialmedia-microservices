@@ -1,15 +1,20 @@
 package pl.jdacewicz.sharingservice.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Advertisement;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.AdvertisementRepository;
+import pl.jdacewicz.sharingservice.util.FileUtils;
 import pl.jdacewicz.sharingservice.util.PageableUtils;
+
+import java.io.IOException;
 
 @Service
 public class AdvertisementService {
@@ -40,15 +45,22 @@ public class AdvertisementService {
         }
     }
 
-    public Advertisement createAdvertisement(String userEmail, String name, String content, String imageFileName) {
+    @Transient
+    public Advertisement createAdvertisement(String userEmail, String name, String content, MultipartFile image)
+            throws IOException {
         User user = userService.getUserByEmail(userEmail);
-        Advertisement advertisement = Advertisement.builder()
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+
+        Advertisement ad = Advertisement.builder()
                 .name(name)
                 .content(content)
-                .image(imageFileName)
+                .image(newFileName)
                 .creator(user)
                 .build();
-        return advertisementRepository.save(advertisement);
+        Advertisement createdAd = advertisementRepository.save(ad);
+
+        FileUtils.saveFile(image, newFileName, createdAd.getDirectoryPath());
+        return createdAd;
     }
 
     public void reactToAdvertisement(int advertisementId, int reactionId) {
@@ -61,14 +73,21 @@ public class AdvertisementService {
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
     }
 
-    public Advertisement updateAdvertisement(String userEmail, int id, String name, String content) {
+    @Transient
+    public Advertisement updateAdvertisement(String userEmail, int id, String name, String content, MultipartFile image)
+            throws IOException {
         User user = userService.getUserByEmail(userEmail);
-        return advertisementRepository.findById(id).map(ad -> {
-            ad.setName(name);
-            ad.setContent(content);
-            ad.setCreator(user);
-            return advertisementRepository.save(ad);
-        }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+
+        Advertisement advertisement = advertisementRepository.findById(id)
+                .map(ad -> {
+                    ad.setName(name);
+                    ad.setContent(content);
+                    ad.setCreator(user);
+                    return ad;
+                }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+
+        FileUtils.saveFile(image, advertisement.getImage(), advertisement.getDirectoryPath());
+        return advertisementRepository.save(advertisement);
     }
 
     public void deleteAdvertisement(int id) {

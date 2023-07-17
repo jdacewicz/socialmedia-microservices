@@ -3,9 +3,13 @@ package pl.jdacewicz.sharingservice.service;
 import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.*;
 import pl.jdacewicz.sharingservice.repository.PostRepository;
+import pl.jdacewicz.sharingservice.util.FileUtils;
+
+import java.io.IOException;
 
 @Service
 public class PostService {
@@ -29,14 +33,20 @@ public class PostService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
     }
 
-    public Post createPost(String userEmail, String content, String imageFileName) {
+    @Transient
+    public Post createPost(String userEmail, String content, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+
         Post post = Post.builder()
                 .creator(user)
                 .content(content)
-                .image(imageFileName)
+                .image(newFileName)
                 .build();
-        return postRepository.save(post);
+        Post createdPost = postRepository.save(post);
+
+        FileUtils.saveFile(image, newFileName, createdPost.getDirectoryPath());
+        return createdPost;
     }
 
     @Transient

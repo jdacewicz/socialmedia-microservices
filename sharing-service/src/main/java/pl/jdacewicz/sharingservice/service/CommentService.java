@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.*;
 import pl.jdacewicz.sharingservice.repository.CommentRepository;
+import pl.jdacewicz.sharingservice.util.FileUtils;
 import pl.jdacewicz.sharingservice.util.PageableUtils;
+
+import java.io.IOException;
 
 @Service
 public class CommentService {
@@ -40,33 +44,43 @@ public class CommentService {
         return commentRepository.findAllByPostIdAndVisible(postId, visible, paging);
     }
 
-    public Comment commentPost(String userEmail, long postId, String content, String imageName) {
+    @Transient
+    public Comment commentPost(String userEmail, long postId, String content, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         Post post = postService.getVisiblePostById(postId);
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         Comment comment = Comment.builder()
                 .content(content)
-                .image(imageName)
+                .image(newFileName)
                 .creator(user)
                 .post(post)
                 .build();
         post.addComment(comment);
-        return commentRepository.save(comment);
+        Comment createdComment = commentRepository.save(comment);
+
+        FileUtils.saveFile(image, newFileName, createdComment.getPost().getCommentsDirectoryPath());
+        return createdComment;
     }
 
-    public Comment commentAdvertisement(String userEmail, int advertisementId, String content,
-                                        String imageName) {
+    @Transient
+    public Comment commentAdvertisement(String userEmail, int advertisementId, String content, MultipartFile image)
+            throws IOException {
         User user = userService.getUserByEmail(userEmail);
         Advertisement advertisement = advertisementService.getActiveAdvertisementById(advertisementId);
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         Comment comment = Comment.builder()
                 .content(content)
-                .image(imageName)
+                .image(newFileName)
                 .creator(user)
                 .advertisement(advertisement)
                 .build();
         advertisement.addComment(comment);
-        return commentRepository.save(comment);
+        Comment createdComment = commentRepository.save(comment);
+
+        FileUtils.saveFile(image, newFileName, comment.getAdvertisement().getCommentsDirectoryPath());
+        return createdComment;
     }
 
     @Transient
