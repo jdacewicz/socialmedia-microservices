@@ -5,8 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.AdvertisementDto;
@@ -19,6 +18,7 @@ import java.beans.Transient;
 import java.io.IOException;
 
 @RestController
+@Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/advertisements",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,11 +66,10 @@ public class AdvertisementController {
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
     @Transient
-    public AdvertisementDto createAdvertisement(@AuthenticationPrincipal Jwt jwt,
+    public AdvertisementDto createAdvertisement(@RequestPart String userEmail,
                                                 @RequestPart String name,
                                                 @RequestPart String content,
                                                 @RequestPart MultipartFile image) throws IOException {
-        String userEmail = jwt.getClaim("email");
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
         Advertisement createdAd = advertisementService.createAdvertisement(userEmail, name, content,
                 newFileName);
@@ -79,15 +78,19 @@ public class AdvertisementController {
         return advertisementMapper.convertToDto(createdAd);
     }
 
-    @PutMapping(value = "/{id}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    public void updateAdvertisement(@PathVariable int id,
-                                    @RequestPart String name,
-                                    @RequestPart String content,
-                                    @RequestPart MultipartFile image) {
-        advertisementService.updateAdvertisement(id, name, content, image);
+    @Transient
+    public AdvertisementDto updateAdvertisement(@PathVariable int id,
+                                                @RequestPart String userEmail,
+                                                @RequestPart String name,
+                                                @RequestPart String content,
+                                                @RequestPart MultipartFile image) throws IOException {
+        Advertisement updatedAd = advertisementService.updateAdvertisement(userEmail, id, name ,content);
+
+        FileUtils.saveFile(image, updatedAd.getImage(), updatedAd.getDirectoryPath());
+        return advertisementMapper.convertToDto(updatedAd);
     }
 
     @DeleteMapping("/{id}")

@@ -6,14 +6,20 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
-import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.service.PostGroupService;
+import pl.jdacewicz.sharingservice.util.FileUtils;
+
+import java.beans.Transient;
+import java.io.IOException;
 
 @RestController
+@Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/posts/groups",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,15 +42,32 @@ public class PostGroupController {
         return postGroupMapper.convertToDto(group);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
+    @Transient
     public PostGroupDto createGroup(@AuthenticationPrincipal Jwt jwt,
-                                    @RequestBody PostGroupRequest groupRequest) {
-        PostGroup group = postGroupMapper.convertFromRequest(groupRequest);
+                                    @RequestPart String name,
+                                    @RequestPart MultipartFile image) throws IOException {
         String userEmail = jwt.getClaim("email");
-        PostGroup createdGroup = postGroupService.createGroup(userEmail, group);
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+        PostGroup createdGroup = postGroupService.createGroup(userEmail, name, newFileName);
+
+        FileUtils.saveFile(image, newFileName, createdGroup.getDirectoryPath());
         return postGroupMapper.convertToDto(createdGroup);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    @Transient
+    public PostGroupDto updateGroup(@PathVariable long id,
+                                    @RequestPart String name,
+                                    @RequestPart MultipartFile image) throws IOException {
+        PostGroup updatedGroup = postGroupService.updateGroup(id, name);
+
+        FileUtils.saveFile(image, updatedGroup.getImage(), updatedGroup.getDirectoryPath());
+        return postGroupMapper.convertToDto(updatedGroup);
     }
 
     @DeleteMapping("/{id}")

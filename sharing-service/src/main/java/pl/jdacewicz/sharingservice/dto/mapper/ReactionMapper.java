@@ -3,7 +3,6 @@ package pl.jdacewicz.sharingservice.dto.mapper;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.ReactionCountDto;
 import pl.jdacewicz.sharingservice.dto.ReactionDto;
-import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.model.Reaction;
 
 import java.util.HashSet;
@@ -12,11 +11,6 @@ import java.util.Set;
 
 @Component
 public class ReactionMapper {
-    public Reaction convertFromRequest(ReactionRequest reactionRequest) {
-        return Reaction.builder()
-                .name(reactionRequest.name())
-                .build();
-    }
 
     public ReactionDto convertToDto(Reaction reaction) {
         return ReactionDto.builder()

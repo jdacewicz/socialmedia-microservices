@@ -7,11 +7,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.ReactionDto;
-import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.ReactionMapper;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.service.ReactionService;
+import pl.jdacewicz.sharingservice.util.FileUtils;
+
+import java.beans.Transient;
+import java.io.IOException;
 
 @RestController
 @Transactional
@@ -49,22 +53,30 @@ public class ReactionController {
                 .map(reactionMapper::convertToDto);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReactionDto createReaction(@RequestBody ReactionRequest reactionRequest) {
-        Reaction reaction = reactionMapper.convertFromRequest(reactionRequest);
-        Reaction createdReaction =  reactionService.createReaction(reaction);
+    @Transient
+    public ReactionDto createReaction(@RequestPart String name,
+                                      @RequestPart MultipartFile image) throws IOException {
+        String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
+        Reaction createdReaction = reactionService.createReaction(name, newFileName);
+
+        FileUtils.saveFile(image, newFileName, createdReaction.getDirectoryPath());
         return reactionMapper.convertToDto(createdReaction);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    public void updateReaction(@PathVariable int id,
-                                      @RequestBody ReactionRequest reactionRequest) {
-        Reaction reaction = reactionMapper.convertFromRequest(reactionRequest);
-        reactionService.updateReaction(id, reaction);
+    @Transient
+    public ReactionDto updateReaction(@PathVariable int id,
+                                      @RequestPart String name,
+                                      @RequestPart MultipartFile image) throws IOException {
+        Reaction updatedReaction = reactionService.updateReaction(id, name);
+
+        FileUtils.saveFile(image, updatedReaction.getImage(), updatedReaction.getDirectoryPath());
+        return reactionMapper.convertToDto(updatedReaction);
     }
 
     @DeleteMapping("/{id}")

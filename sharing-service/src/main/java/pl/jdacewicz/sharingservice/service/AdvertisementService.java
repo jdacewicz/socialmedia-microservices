@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Advertisement;
-import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.AdvertisementRepository;
@@ -63,19 +61,12 @@ public class AdvertisementService {
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
     }
 
-    public void commentAdvertisement(int advertisementId, Comment comment) {
-        advertisementRepository.findById(advertisementId)
-                .map(ad -> {
-                    ad.addComment(comment);
-                    return advertisementRepository.save(ad);
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
-    }
-
-    public void updateAdvertisement(int id, String name, String content, MultipartFile image) {
-        advertisementRepository.findById(id).map(ad -> {
+    public Advertisement updateAdvertisement(String userEmail, int id, String name, String content) {
+        User user = userService.getUserByEmail(userEmail);
+        return advertisementRepository.findById(id).map(ad -> {
             ad.setName(name);
             ad.setContent(content);
-            ad.setImage(image.getOriginalFilename());
+            ad.setCreator(user);
             return advertisementRepository.save(ad);
         }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
     }

@@ -4,7 +4,6 @@ import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.CommentDto;
-import pl.jdacewicz.sharingservice.dto.CommentRequest;
 import pl.jdacewicz.sharingservice.model.Comment;
 
 import java.util.List;
@@ -34,11 +33,5 @@ public class CommentMapper {
         return commentList.stream()
                 .map(this::convertToDto)
                 .toList();
-    }
-
-    public Comment convertFromRequest(CommentRequest commentRequest) {
-        return Comment.builder()
-                .content(commentRequest.content())
-                .build();
     }
 }

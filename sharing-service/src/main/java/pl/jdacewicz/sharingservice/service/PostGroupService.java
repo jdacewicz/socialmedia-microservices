@@ -24,10 +24,22 @@ public class PostGroupService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
     }
 
-    public PostGroup createGroup(String userEmail, PostGroup postGroup) {
+    public PostGroup createGroup(String userEmail, String name, String fileName) {
         User user = userService.getUserByEmail(userEmail);
-        postGroup.setCreator(user);
+        PostGroup postGroup = PostGroup.builder()
+                .name(name)
+                .image(fileName)
+                .creator(user)
+                .build();
         return postGroupRepository.save(postGroup);
+    }
+
+    public PostGroup updateGroup(long id, String name) {
+        return postGroupRepository.findById(id)
+                .map(group -> {
+                    group.setName(name);
+                    return postGroupRepository.save(group);
+                }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
     }
 
     public void deleteGroup(long id) {

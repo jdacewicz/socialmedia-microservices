@@ -18,9 +18,13 @@ import java.util.List;
 @Table(name = "t_posts_groups")
 public class PostGroup extends Group{
 
+    public static final String POST_GROUPS_DIRECTORY_PATH = "uploads/groups/post-groups/";
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;
+
+    private String image;
 
     @ManyToMany
     @JoinTable(
@@ -29,4 +33,15 @@ public class PostGroup extends Group{
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     @Builder.Default
     private List<Post> posts = new LinkedList<>();
+
+    public String getImagePath() {
+        if (image == null) {
+            return null;
+        }
+        return getDirectoryPath() + "/" + image;
+    }
+
+    public String getDirectoryPath() {
+        return POST_GROUPS_DIRECTORY_PATH + "/" + super.getId();
+    }
 }

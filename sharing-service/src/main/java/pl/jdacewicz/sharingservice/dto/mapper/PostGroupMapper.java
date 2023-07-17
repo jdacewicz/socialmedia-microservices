@@ -4,7 +4,6 @@ import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
-import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 
 @Component
@@ -24,12 +23,6 @@ public class PostGroupMapper {
                 .name(EmojiParser.parseToUnicode(group.getName()))
                 .creator(userMapper.convertToDto(group.getCreator()))
                 .posts(postMapper.convertToDto(group.getPosts()))
-                .build();
-    }
-
-    public PostGroup convertFromRequest(PostGroupRequest groupRequest) {
-        return PostGroup.builder()
-                .name(groupRequest.name())
                 .build();
     }
 }

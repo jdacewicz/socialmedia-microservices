@@ -16,13 +16,15 @@ import java.util.List;
 @Table(name = "t_reactions")
 public class Reaction {
 
+    public static final String REACTIONS_DIRECTORY_PATH = "uploads/reactions";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
 
-    //image
+    private String image;
 
     @ManyToMany(mappedBy = "reactions")
     private List<Post> postList;
@@ -32,4 +34,15 @@ public class Reaction {
 
     @ManyToMany(mappedBy = "reactions")
     private List<Advertisement> advertisementList;
+
+    public String getImagePath() {
+        if (image == null) {
+            return null;
+        }
+        return getDirectoryPath() + "/" + image;
+    }
+
+    public String getDirectoryPath() {
+        return REACTIONS_DIRECTORY_PATH + "/" + id;
+    }
 }

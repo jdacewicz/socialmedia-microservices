@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,13 +33,19 @@ public class ReactionService {
         }
     }
 
-    public Reaction createReaction(Reaction reaction) {
+    public Reaction createReaction(String name, String newFileName) {
+        Reaction reaction = Reaction.builder()
+                .name(name)
+                .image(newFileName)
+                .build();
         return reactionRepository.save(reaction);
     }
 
-    @Transient
-    public void updateReaction(int id, Reaction reaction) {
-        reactionRepository.setReactionById(id, reaction);
+    public Reaction updateReaction(int id, String name) {
+        return reactionRepository.findById(id).map(reaction -> {
+            reaction.setName(name);
+            return reactionRepository.save(reaction);
+        }).orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
     }
 
     public void deleteReaction(int id) {
