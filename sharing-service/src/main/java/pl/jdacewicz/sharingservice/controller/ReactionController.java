@@ -71,7 +71,7 @@ public class ReactionController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteReaction(@PathVariable int id) {
+    public void deleteReaction(@PathVariable int id) throws IOException {
         reactionService.deleteReaction(id);
     }
 }

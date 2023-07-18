@@ -34,6 +34,11 @@ public class CommentService {
         this.advertisementService = advertisementService;
     }
 
+    public Comment getCommentById(long id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + id));
+    }
+
     public Comment getVisibleCommentById(long id) {
         return commentRepository.findByIdAndVisible(id, true)
                 .orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + id));
@@ -58,7 +63,7 @@ public class CommentService {
         post.addComment(comment);
         Comment createdComment = commentRepository.save(comment);
 
-        FileUtils.saveFile(image, newFileName, createdComment.getPost().getCommentsDirectoryPath());
+        FileUtils.saveFile(image, newFileName, createdComment.getDirectoryPath());
         return createdComment;
     }
 
@@ -77,7 +82,7 @@ public class CommentService {
         advertisement.addComment(comment);
         Comment createdComment = commentRepository.save(comment);
 
-        FileUtils.saveFile(image, newFileName, comment.getAdvertisement().getCommentsDirectoryPath());
+        FileUtils.saveFile(image, newFileName, comment.getDirectoryPath());
         return createdComment;
     }
 
@@ -96,7 +101,10 @@ public class CommentService {
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + commentId));
     }
 
-    public void deleteComment(long id) {
+    public void deleteComment(long id) throws IOException {
+        Comment comment = getCommentById(id);
+
+        FileUtils.deleteFile(comment.getDirectoryPath(), comment.getImage());
         commentRepository.deleteById(id);
     }
 }

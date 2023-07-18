@@ -62,10 +62,6 @@ public class Post {
         return getDirectoryPath() + "/" + image;
     }
 
-    public String getCommentsDirectoryPath() {
-        return getDirectoryPath() + "/comments";
-    }
-
     public String getDirectoryPath() {
         return POSTS_DIRECTORY_PATH + "/" + id;
     }

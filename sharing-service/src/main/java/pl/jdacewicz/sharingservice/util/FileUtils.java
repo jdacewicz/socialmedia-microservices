@@ -25,6 +25,21 @@ public class FileUtils {
         Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
     }
 
+    public static void deleteFile(String fileDir, String fileName) throws IOException {
+        Path deletePath = Paths.get(fileDir);
+
+        if (Files.exists(deletePath)) {
+            Path filePath = deletePath.resolve(fileName);
+            Files.deleteIfExists(filePath);
+        }
+    }
+
+    public static void deleteDirectory(String directory) throws IOException {
+        Path deletePath = Paths.get(directory);
+
+        Files.deleteIfExists(deletePath);
+    }
+
     public static String generateFileName(String originalName) {
         int lastDotIndex = originalName.lastIndexOf('.');
         String extension = originalName.substring(lastDotIndex);

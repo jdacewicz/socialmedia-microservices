@@ -93,7 +93,7 @@ public class CommentController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteComment(@PathVariable long id) {
+    public void deleteComment(@PathVariable long id) throws IOException {
         commentService.deleteComment(id);
     }
 }

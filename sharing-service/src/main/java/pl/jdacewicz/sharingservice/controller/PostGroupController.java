@@ -61,7 +61,7 @@ public class PostGroupController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteGroup(@PathVariable long id) {
+    public void deleteGroup(@PathVariable long id) throws IOException {
         postGroupService.deleteGroup(id);
     }
 }

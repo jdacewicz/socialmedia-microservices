@@ -83,7 +83,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@PathVariable long id) {
+    public void deletePost(@PathVariable long id) throws IOException {
         postService.deletePost(id);
     }
 }

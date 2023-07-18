@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "t_comments")
 public class Comment {
 
-    public static final String COMMENTS_DIRECTORY_PATH = "uploads/comments";
+    public final static String COMMENTS_DIRECTORY_NAME = "comments";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,7 +58,15 @@ public class Comment {
         if (image == null) {
             return null;
         }
-        return "/" + COMMENTS_DIRECTORY_PATH + "/" + id + "/" + image;
+        return getDirectoryPath() + "/" + image;
+    }
+
+    public String getDirectoryPath() {
+        if (post == null && advertisement == null) {
+            return null;
+        }
+        return (post == null) ? advertisement.getDirectoryPath() + "/" + COMMENTS_DIRECTORY_NAME :
+                post.getDirectoryPath() + "/" + COMMENTS_DIRECTORY_NAME;
     }
 
     public void addReaction(Reaction reaction) {

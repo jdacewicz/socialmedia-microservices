@@ -54,11 +54,4 @@ public class UserController {
                                      @RequestPart MultipartFile profilePicture) throws IOException {
        userService.updateProfilePicture(jwt.getClaim("email"), profilePicture);
     }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(@PathVariable long id) {
-        userService.deleteUserById(id);
-    }
 }

@@ -52,7 +52,10 @@ public class PostGroupService {
         return postGroupRepository.save(postGroup);
     }
 
-    public void deleteGroup(long id) {
+    public void deleteGroup(long id) throws IOException {
+        PostGroup group = getPostGroupById(id);
+
+        FileUtils.deleteDirectory(group.getDirectoryPath());
         postGroupRepository.deleteById(id);
     }
 }

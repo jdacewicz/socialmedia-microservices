@@ -56,7 +56,10 @@ public class ReactionService {
         return reactionRepository.save(reaction);
     }
 
-    public void deleteReaction(int id) {
+    public void deleteReaction(int id) throws IOException {
+        Reaction reaction = getReactionById(id);
+
+        FileUtils.deleteDirectory(reaction.getDirectoryPath());
         reactionRepository.deleteById(id);
     }
 }

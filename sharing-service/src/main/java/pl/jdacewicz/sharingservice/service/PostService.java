@@ -31,6 +31,11 @@ public class PostService {
         this.userService = userService;
     }
 
+    public Post getPostById(long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
+    }
+
     public Post getVisiblePostById(long id) {
         return postRepository.findByIdAndVisibleIs(id, true)
                 .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
@@ -86,7 +91,10 @@ public class PostService {
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + groupId));
     }
 
-    public void deletePost(long id) {
+    public void deletePost(long id) throws IOException {
+        Post post = getPostById(id);
+
+        FileUtils.deleteDirectory(post.getDirectoryPath());
         postRepository.deleteById(id);
     }
 }

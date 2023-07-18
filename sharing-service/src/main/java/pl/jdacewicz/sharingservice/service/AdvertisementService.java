@@ -30,6 +30,11 @@ public class AdvertisementService {
         this.userService = userService;
     }
 
+    public Advertisement getAdvertisementById(int id) {
+        return advertisementRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+    }
+
     public Advertisement getActiveAdvertisementById(int id) {
         return advertisementRepository.findByIdAndActive(id, true)
                 .orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
@@ -87,7 +92,10 @@ public class AdvertisementService {
         return advertisementRepository.save(advertisement);
     }
 
-    public void deleteAdvertisement(int id) {
-        advertisementRepository.deleteById(id);
+    public void deleteAdvertisement(int id) throws IOException {
+        Advertisement advertisement = getAdvertisementById(id);
+
+        FileUtils.deleteDirectory(advertisement.getDirectoryPath());
+        advertisementRepository.delete(advertisement);
     }
 }

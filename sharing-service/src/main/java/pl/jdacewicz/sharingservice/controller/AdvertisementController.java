@@ -84,7 +84,7 @@ public class AdvertisementController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteAdvertisement(@PathVariable int id) {
+    public void deleteAdvertisement(@PathVariable int id) throws IOException {
         advertisementService.deleteAdvertisement(id);
     }
 }

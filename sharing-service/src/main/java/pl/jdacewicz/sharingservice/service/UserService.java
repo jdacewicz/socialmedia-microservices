@@ -48,8 +48,4 @@ public class UserService {
 
         FileUtils.saveFile(profilePicture, user.getProfilePicture(), user.getDirectoryPath());
     }
-
-    public void deleteUserById(long id) {
-        userRepository.deleteById(id);
-    }
 }
