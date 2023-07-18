@@ -22,6 +22,7 @@ public class CommentMapper {
 
     public CommentDto convertToDto(Comment comment) {
         return CommentDto.builder()
+                .imagePath(comment.getImagePath())
                 .creator(userMapper.convertToDto(comment.getCreator()))
                 .creationTime(comment.getCreationTime())
                 .reactions(reactionMapper.convertToCountDto(comment.getReactions()))

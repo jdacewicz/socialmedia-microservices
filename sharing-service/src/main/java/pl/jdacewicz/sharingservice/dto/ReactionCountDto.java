@@ -9,7 +9,7 @@ public class ReactionCountDto {
 
     private String name;
 
-    //img
+    private String imagePath;
 
     private long count;
 }

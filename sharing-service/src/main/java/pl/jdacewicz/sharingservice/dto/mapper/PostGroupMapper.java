@@ -21,6 +21,7 @@ public class PostGroupMapper {
     public PostGroupDto convertToDto(PostGroup group) {
         return PostGroupDto.builder()
                 .name(EmojiParser.parseToUnicode(group.getName()))
+                .imagePath(group.getImagePath())
                 .creator(userMapper.convertToDto(group.getCreator()))
                 .posts(postMapper.convertToDto(group.getPosts()))
                 .build();

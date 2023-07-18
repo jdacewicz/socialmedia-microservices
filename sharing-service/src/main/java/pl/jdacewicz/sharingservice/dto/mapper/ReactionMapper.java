@@ -15,6 +15,7 @@ public class ReactionMapper {
     public ReactionDto convertToDto(Reaction reaction) {
         return ReactionDto.builder()
                 .name(reaction.getName())
+                .imagePath(reaction.getImagePath())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class ReactionMapper {
         return reactionSet.stream()
                 .map(reaction -> ReactionCountDto.builder()
                         .name(reaction.getName())
+                        .imagePath(reaction.getImagePath())
                         .count(countReactions(reactionList, reaction))
                         .build())
                 .toList();

@@ -10,5 +10,5 @@ import lombok.Data;
 public class ReactionDto {
 
     private String name;
-    //img
+    private String imagePath;
 }
