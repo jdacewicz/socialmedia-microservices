@@ -66,14 +66,11 @@ public class AdvertisementService {
     public Advertisement updateAdvertisement(String userEmail, int id, String name, String content, MultipartFile image)
             throws IOException {
         User user = userService.getUserByEmail(userEmail);
+        Advertisement advertisement = getAdvertisementById(id);
 
-        Advertisement advertisement = advertisementRepository.findById(id)
-                .map(ad -> {
-                    ad.setName(name);
-                    ad.setContent(content);
-                    ad.setCreator(user);
-                    return ad;
-                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
+        advertisement.setName(name);
+        advertisement.setContent(content);
+        advertisement.setCreator(user);
 
         FileUtils.saveFile(image, advertisement.getImage(), advertisement.getDirectoryPath());
         return advertisementRepository.save(advertisement);
