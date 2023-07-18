@@ -82,14 +82,6 @@ public class CommentController {
         commentService.changeCommentVisibility(id, visible);
     }
 
-    @PutMapping("/{commentId}/react/{reactionId}")
-    @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
-    public void reactToComment(@PathVariable long commentId,
-                               @PathVariable int reactionId) {
-        commentService.reactToComment(commentId, reactionId);
-    }
-
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)

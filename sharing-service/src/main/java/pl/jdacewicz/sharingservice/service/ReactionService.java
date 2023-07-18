@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
+import pl.jdacewicz.sharingservice.model.Advertisement;
+import pl.jdacewicz.sharingservice.model.Comment;
+import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.repository.ReactionRepository;
 import pl.jdacewicz.sharingservice.util.FileUtils;
@@ -21,10 +24,17 @@ public class ReactionService {
     private String notFoundMessage;
 
     private final ReactionRepository reactionRepository;
+    private final AdvertisementService advertisementService;
+    private final CommentService commentService;
+    private final PostService postService;
 
     @Autowired
-    public ReactionService(ReactionRepository reactionRepository) {
+    public ReactionService(ReactionRepository reactionRepository, AdvertisementService advertisementService,
+                           CommentService commentService, PostService postService) {
         this.reactionRepository = reactionRepository;
+        this.advertisementService = advertisementService;
+        this.commentService = commentService;
+        this.postService = postService;
     }
 
     public Reaction getReactionById(int id) {
@@ -49,6 +59,30 @@ public class ReactionService {
 
         FileUtils.saveFile(image, newFileName, createdReaction.getDirectoryPath());
         return createdReaction;
+    }
+
+    public void reactToVisiblePost(int reactionId, long postId) {
+        Reaction reaction = getReactionById(reactionId);
+        Post post = postService.getVisiblePostById(postId);
+
+        post.addReaction(reaction);
+        reactionRepository.save(reaction);
+    }
+
+    public void reactToActiveAdvertisement(int reactionId, int advertisementId) {
+        Reaction reaction = getReactionById(reactionId);
+        Advertisement advertisement = advertisementService.getActiveAdvertisementById(advertisementId);
+
+        advertisement.addReaction(reaction);
+        reactionRepository.save(reaction);
+    }
+
+    public void reactToComment(int reactionId, long commentId) {
+        Reaction reaction = getReactionById(reactionId);
+        Comment comment = commentService.getCommentById(commentId);
+
+        comment.addReaction(reaction);
+        reactionRepository.save(reaction);
     }
 
     public Reaction updateReaction(int id, String name, MultipartFile image) throws IOException {

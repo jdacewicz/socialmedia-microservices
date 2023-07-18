@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.model.PostGroup;
-import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.PostRepository;
 import pl.jdacewicz.sharingservice.util.FileUtils;
@@ -22,15 +21,12 @@ public class PostService {
     private String notFoundMessage;
 
     private final PostRepository postRepository;
-    private final ReactionService reactionService;
     private final PostGroupService postGroupService;
     private final UserService userService;
 
     @Autowired
-    public PostService(PostRepository postRepository, ReactionService reactionService,
-                       PostGroupService postGroupService, UserService userService) {
+    public PostService(PostRepository postRepository, PostGroupService postGroupService, UserService userService) {
         this.postRepository = postRepository;
-        this.reactionService = reactionService;
         this.postGroupService = postGroupService;
         this.userService = userService;
     }
@@ -63,16 +59,6 @@ public class PostService {
     @Transactional
     public void changePostVisibility(long id, boolean visible) {
         postRepository.setVisibleById(id, visible);
-    }
-
-    public void reactToPost(long postId, int reactionId) {
-        Reaction reaction = reactionService.getReactionById(reactionId);
-
-       postRepository.findById(postId)
-               .map(post -> {
-                    post.addReaction(reaction);
-                    return postRepository.save(post);
-        }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public void addPostToGroup(long postId, long groupId) {

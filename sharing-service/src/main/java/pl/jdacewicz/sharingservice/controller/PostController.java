@@ -57,14 +57,6 @@ public class PostController {
         postService.changePostVisibility(id, visible);
     }
 
-    @PutMapping("/{postId}/react/{reactionId}")
-    @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
-    public void reactToPost(@PathVariable long postId,
-                            @PathVariable int reactionId) {
-        postService.reactToPost(postId, reactionId);
-    }
-
     @PutMapping("/{postId}/groups/{groupId}/add")
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)

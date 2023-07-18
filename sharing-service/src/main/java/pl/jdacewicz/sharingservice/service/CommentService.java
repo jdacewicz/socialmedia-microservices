@@ -22,17 +22,14 @@ public class CommentService {
     private String notFoundMessage;
 
     private final CommentRepository commentRepository;
-    private final ReactionService reactionService;
     private final UserService userService;
     private final PostService postService;
     private final AdvertisementService advertisementService;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, ReactionService reactionService,
-                          UserService userService, PostService postService,
+    public CommentService(CommentRepository commentRepository, UserService userService, PostService postService,
                           AdvertisementService advertisementService) {
         this.commentRepository = commentRepository;
-        this.reactionService = reactionService;
         this.userService = userService;
         this.postService = postService;
         this.advertisementService = advertisementService;
@@ -95,15 +92,6 @@ public class CommentService {
         commentRepository.setVisibilityBy(id, visible);
     }
 
-    public void reactToComment(long commentId, int reactionId) {
-        Reaction reaction = reactionService.getReactionById(reactionId);
-
-        commentRepository.findById(commentId)
-                .map(comment -> {
-                    comment.addReaction(reaction);
-                    return commentRepository.save(comment);
-                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
-    }
 
     public void deleteComment(long id) throws IOException {
         Comment comment = getCommentById(id);

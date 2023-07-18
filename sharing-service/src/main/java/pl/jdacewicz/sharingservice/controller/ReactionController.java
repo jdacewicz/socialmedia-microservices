@@ -68,6 +68,30 @@ public class ReactionController {
         return reactionMapper.convertToDto(updatedReaction);
     }
 
+    @PutMapping("/{reactionId}/posts/{postId}")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    public void reactToPost(@PathVariable long postId,
+                            @PathVariable int reactionId) {
+        reactionService.reactToVisiblePost(reactionId, postId);
+    }
+
+    @PutMapping("/{reactionId}/advertisements/{advertisementId}")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    public void reactToAdvertisement(@PathVariable int advertisementId,
+                                     @PathVariable int reactionId) {
+        reactionService.reactToActiveAdvertisement(reactionId, advertisementId);
+    }
+
+    @PutMapping("/{reactionId}/comments/{commentId}")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    public void reactToComment(@PathVariable long commentId,
+                               @PathVariable int reactionId) {
+        reactionService.reactToComment(reactionId, commentId);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)

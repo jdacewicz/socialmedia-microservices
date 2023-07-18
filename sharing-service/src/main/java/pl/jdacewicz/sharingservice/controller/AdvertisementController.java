@@ -50,14 +50,6 @@ public class AdvertisementController {
                 .map(advertisementMapper::convertToDto);
     }
 
-    @PutMapping("/{advertisementId}/react/{reactionId}")
-    @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
-    public void reactToPost(@PathVariable int advertisementId,
-                            @PathVariable int reactionId) {
-        advertisementService.reactToAdvertisement(advertisementId, reactionId);
-    }
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
