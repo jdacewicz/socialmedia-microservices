@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
@@ -13,6 +14,9 @@ import java.io.IOException;
 @Service
 public class UserService {
 
+    @Value("${message.not-fund.user}")
+    private String notFoundMessage;
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -22,12 +26,12 @@ public class UserService {
 
     public User getUserById(long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find user with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find user with email: " + email));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public User createUser(String userEmail, MultipartFile profilePicture) throws IOException {

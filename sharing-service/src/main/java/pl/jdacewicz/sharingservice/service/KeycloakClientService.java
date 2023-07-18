@@ -15,6 +15,9 @@ public class KeycloakClientService {
     @Value("${spring.security.oauth2.resourceserver.keycloak.realm}")
     private String realm;
 
+    @Value("${message.not-found.user}")
+    private String notFoundMessage;
+
     private final Keycloak keycloak;
 
     @Autowired
@@ -28,7 +31,7 @@ public class KeycloakClientService {
                 .searchByEmail(email, true);
 
         if (users.isEmpty()) {
-            throw new RecordNotFoundException("Could not find user with email: " + email);
+            throw new RecordNotFoundException(notFoundMessage);
         }
         return users.get(0);
     }

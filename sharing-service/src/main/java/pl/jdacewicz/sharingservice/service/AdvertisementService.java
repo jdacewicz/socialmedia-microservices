@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ import java.io.IOException;
 @Service
 public class AdvertisementService {
 
+    @Value("${message.not-found.advertisement}")
+    private String notFoundMessage;
+
     private final AdvertisementRepository advertisementRepository;
     private final ReactionService reactionService;
     private final UserService userService;
@@ -32,21 +36,18 @@ public class AdvertisementService {
 
     public Advertisement getAdvertisementById(int id) {
         return advertisementRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Advertisement getActiveAdvertisementById(int id) {
         return advertisementRepository.findByIdAndActive(id, true)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Page<Advertisement> getAdvertisements(String name, int page, int size, String sort, String directory) {
         Pageable paging = PageableUtils.createPageable(page, size, sort, directory);
-        if (name == null || name.isEmpty()) {
-            return advertisementRepository.findAll(paging);
-        } else {
-            return advertisementRepository.findAllByName(name, paging);
-        }
+        return (name == null || name.isEmpty()) ?
+                advertisementRepository.findAll(paging) : advertisementRepository.findAllByName(name, paging);
     }
 
     public Advertisement createAdvertisement(String userEmail, String name, String content, MultipartFile image)
@@ -73,7 +74,7 @@ public class AdvertisementService {
                 .map(ad -> {
                     ad.addReaction(reaction);
                     return advertisementRepository.save(ad);
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
+                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Advertisement updateAdvertisement(String userEmail, int id, String name, String content, MultipartFile image)
@@ -86,7 +87,7 @@ public class AdvertisementService {
                     ad.setContent(content);
                     ad.setCreator(user);
                     return ad;
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + id));
+                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
 
         FileUtils.saveFile(image, advertisement.getImage(), advertisement.getDirectoryPath());
         return advertisementRepository.save(advertisement);

@@ -23,9 +23,20 @@ spring:
             password: admin
         jwt:
           issuer-uri: ${spring.security.oauth2.resourceserver.keycloak.server-url}/realms/${spring.security.oauth2.resourceserver.keycloak.realm}
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
 server:
   port: 0
+
+message:
+  not-found:
+    advertisement: Could not find advertisement.
+    comment: Could not find comment.
+    post: Could not find group.
+    post-group: Could not find group.
+    reaction: Could not find reaction.
+    user: Could not find user.

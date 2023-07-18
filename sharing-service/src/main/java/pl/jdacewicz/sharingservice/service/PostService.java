@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,9 @@ import java.io.IOException;
 
 @Service
 public class PostService {
+
+    @Value("${message.not-found.post}")
+    private String notFoundMessage;
 
     private final PostRepository postRepository;
     private final ReactionService reactionService;
@@ -33,12 +37,12 @@ public class PostService {
 
     public Post getPostById(long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Post getVisiblePostById(long id) {
         return postRepository.findByIdAndVisibleIs(id, true)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Post createPost(String userEmail, String content, MultipartFile image) throws IOException {
@@ -68,7 +72,7 @@ public class PostService {
                .map(post -> {
                     post.addReaction(reaction);
                     return postRepository.save(post);
-        }).orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + postId));
+        }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public void addPostToGroup(long postId, long groupId) {
@@ -78,7 +82,7 @@ public class PostService {
                 .map(post -> {
                     post.addPostGroup(group);
                     return postRepository.save(post);
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + groupId));
+                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public void removePostFromGroup(long postId, long groupId) {
@@ -88,7 +92,7 @@ public class PostService {
                 .map(post -> {
                     post.removePostGroup(group);
                     return postRepository.save(post);
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + groupId));
+                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public void deletePost(long id) throws IOException {

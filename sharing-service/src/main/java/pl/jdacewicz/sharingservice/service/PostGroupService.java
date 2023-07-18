@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
@@ -14,6 +15,9 @@ import java.io.IOException;
 @Service
 public class PostGroupService {
 
+    @Value("${message.not-found.post-group}")
+    private String notFoundMessage;
+
     private final PostGroupRepository postGroupRepository;
     private final UserService userService;
 
@@ -25,7 +29,7 @@ public class PostGroupService {
 
     public PostGroup getPostGroupById(long id) {
         return postGroupRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public PostGroup createGroup(String userEmail, String name, MultipartFile image) throws IOException {
@@ -44,8 +48,7 @@ public class PostGroupService {
     }
 
     public PostGroup updateGroup(long id, String name, MultipartFile image) throws IOException {
-        PostGroup postGroup = postGroupRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
+        PostGroup postGroup = getPostGroupById(id);
 
         postGroup.setName(name);
         FileUtils.saveFile(image, postGroup.getImage(), postGroup.getDirectoryPath());

@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import java.io.IOException;
 @Service
 public class ReactionService {
 
+    @Value("${message.not-found.reaction}")
+    private String notFoundMessage;
+
     private final ReactionRepository reactionRepository;
 
     @Autowired
@@ -25,7 +29,7 @@ public class ReactionService {
 
     public Reaction getReactionById(int id) {
         return reactionRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Page<Reaction> getReactions(String name, int page, int size, String sort, String directory) {
@@ -48,8 +52,7 @@ public class ReactionService {
     }
 
     public Reaction updateReaction(int id, String name, MultipartFile image) throws IOException {
-        Reaction reaction = reactionRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
+        Reaction reaction = getReactionById(id);
 
         reaction.setName(name);
         FileUtils.saveFile(image, reaction.getImage(), reaction.getDirectoryPath());

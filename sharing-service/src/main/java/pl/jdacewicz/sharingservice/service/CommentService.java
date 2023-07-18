@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import java.io.IOException;
 
 @Service
 public class CommentService {
+
+    @Value("${message.not-found.comment}")
+    private String notFoundMessage;
 
     private final CommentRepository commentRepository;
     private final ReactionService reactionService;
@@ -36,12 +40,12 @@ public class CommentService {
 
     public Comment getCommentById(long id) {
         return commentRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Comment getVisibleCommentById(long id) {
         return commentRepository.findByIdAndVisible(id, true)
-                .orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public Page<Comment> getPostComments(long postId, boolean visible, int page, int size, String sort, String directory) {
@@ -98,7 +102,7 @@ public class CommentService {
                 .map(comment -> {
                     comment.addReaction(reaction);
                     return commentRepository.save(comment);
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find comment with id: " + commentId));
+                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public void deleteComment(long id) throws IOException {
