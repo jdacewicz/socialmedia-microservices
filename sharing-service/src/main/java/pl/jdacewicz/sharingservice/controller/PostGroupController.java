@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
@@ -17,7 +16,6 @@ import pl.jdacewicz.sharingservice.service.PostGroupService;
 import java.io.IOException;
 
 @RestController
-@Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/posts/groups",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,14 +30,10 @@ public class ReactionService {
 
     public Page<Reaction> getReactions(String name, int page, int size, String sort, String directory) {
         Pageable paging = PageableUtils.createPageable(page, size, sort, directory);
-        if (name == null || name.isEmpty()) {
-            return reactionRepository.findAll(paging);
-        } else {
-            return reactionRepository.findAllByName(name, paging);
-        }
+        return (name == null || name.isEmpty()) ?
+                reactionRepository.findAll(paging) : reactionRepository.findAllByName(name, paging);
     }
 
-    @Transient
     public Reaction createReaction(String name, MultipartFile image) throws IOException {
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
@@ -52,14 +47,11 @@ public class ReactionService {
         return createdReaction;
     }
 
-    @Transient
     public Reaction updateReaction(int id, String name, MultipartFile image) throws IOException {
         Reaction reaction = reactionRepository.findById(id)
-                .map(r -> {
-                    r.setName(name);
-                    return r;
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException("Could not find reaction with id: " + id));
 
+        reaction.setName(name);
         FileUtils.saveFile(image, reaction.getImage(), reaction.getDirectoryPath());
         return reactionRepository.save(reaction);
     }

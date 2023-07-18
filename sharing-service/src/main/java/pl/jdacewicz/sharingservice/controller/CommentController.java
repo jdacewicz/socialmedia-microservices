@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.CommentDto;
@@ -18,7 +17,6 @@ import pl.jdacewicz.sharingservice.service.CommentService;
 import java.io.IOException;
 
 @RestController
-@Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/comments",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +52,7 @@ public class CommentController {
                 .map(commentMapper::convertToDto);
     }
 
-    @PostMapping("/posts/{postId}")
+    @PostMapping(value = "/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto commentPost(@AuthenticationPrincipal Jwt jwt,
@@ -65,7 +63,7 @@ public class CommentController {
         return commentMapper.convertToDto(comment);
     }
 
-    @PostMapping("/advertisements/{advertisementId}")
+    @PostMapping(value = "/advertisements/{advertisementId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public CommentDto commentAdvertisement(@AuthenticationPrincipal Jwt jwt,

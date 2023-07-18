@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +30,6 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find user with email: " + email));
     }
 
-    @Transient
     public User createUser(String userEmail, MultipartFile profilePicture) throws IOException {
         String newFileName = FileUtils.generateFileName(profilePicture.getOriginalFilename());
 

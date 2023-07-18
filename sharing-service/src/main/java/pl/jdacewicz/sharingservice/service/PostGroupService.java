@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +28,6 @@ public class PostGroupService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
     }
 
-    @Transient
     public PostGroup createGroup(String userEmail, String name, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
@@ -45,14 +43,11 @@ public class PostGroupService {
         return createdGroup;
     }
 
-    @Transient
     public PostGroup updateGroup(long id, String name, MultipartFile image) throws IOException {
         PostGroup postGroup = postGroupRepository.findById(id)
-                .map(group -> {
-                    group.setName(name);
-                    return group;
-                }).orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
+                .orElseThrow(() -> new RecordNotFoundException("Could not find group with id: " + id));
 
+        postGroup.setName(name);
         FileUtils.saveFile(image, postGroup.getImage(), postGroup.getDirectoryPath());
         return postGroupRepository.save(postGroup);
     }

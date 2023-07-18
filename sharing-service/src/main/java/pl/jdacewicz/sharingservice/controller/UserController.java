@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.controller;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +16,6 @@ import pl.jdacewicz.sharingservice.service.UserService;
 import java.io.IOException;
 
 @RestController
-@Transactional
 @RequestMapping(value = "${spring.application.api-url}" + "/users",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,7 +38,7 @@ public class UserController {
         return userMapper.convertToDto(user);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@AuthenticationPrincipal Jwt jwt,
@@ -49,7 +47,7 @@ public class UserController {
         return userMapper.convertToDto(createdUser, jwt);
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
     public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,

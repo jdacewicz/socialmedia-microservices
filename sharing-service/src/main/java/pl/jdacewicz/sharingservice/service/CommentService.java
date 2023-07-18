@@ -1,10 +1,10 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.*;
@@ -44,7 +44,6 @@ public class CommentService {
         return commentRepository.findAllByPostIdAndVisible(postId, visible, paging);
     }
 
-    @Transient
     public Comment commentPost(String userEmail, long postId, String content, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         Post post = postService.getVisiblePostById(postId);
@@ -63,7 +62,6 @@ public class CommentService {
         return createdComment;
     }
 
-    @Transient
     public Comment commentAdvertisement(String userEmail, int advertisementId, String content, MultipartFile image)
             throws IOException {
         User user = userService.getUserByEmail(userEmail);
@@ -83,7 +81,7 @@ public class CommentService {
         return createdComment;
     }
 
-    @Transient
+    @Transactional
     public void changeCommentVisibility(long id, boolean visible) {
         commentRepository.setVisibilityBy(id, visible);
     }

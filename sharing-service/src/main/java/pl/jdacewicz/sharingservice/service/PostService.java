@@ -1,11 +1,14 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
-import pl.jdacewicz.sharingservice.model.*;
+import pl.jdacewicz.sharingservice.model.Post;
+import pl.jdacewicz.sharingservice.model.PostGroup;
+import pl.jdacewicz.sharingservice.model.Reaction;
+import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.PostRepository;
 import pl.jdacewicz.sharingservice.util.FileUtils;
 
@@ -33,7 +36,6 @@ public class PostService {
                 .orElseThrow(() -> new RecordNotFoundException("Could not find post with id: " + id));
     }
 
-    @Transient
     public Post createPost(String userEmail, String content, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
@@ -49,7 +51,7 @@ public class PostService {
         return createdPost;
     }
 
-    @Transient
+    @Transactional
     public void changePostVisibility(long id, boolean visible) {
         postRepository.setVisibleById(id, visible);
     }

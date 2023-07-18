@@ -1,6 +1,5 @@
 package pl.jdacewicz.sharingservice.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +44,6 @@ public class AdvertisementService {
         }
     }
 
-    @Transient
     public Advertisement createAdvertisement(String userEmail, String name, String content, MultipartFile image)
             throws IOException {
         User user = userService.getUserByEmail(userEmail);
@@ -73,7 +71,6 @@ public class AdvertisementService {
                 }).orElseThrow(() -> new RecordNotFoundException("Could not find advertisement with id: " + advertisementId));
     }
 
-    @Transient
     public Advertisement updateAdvertisement(String userEmail, int id, String name, String content, MultipartFile image)
             throws IOException {
         User user = userService.getUserByEmail(userEmail);
