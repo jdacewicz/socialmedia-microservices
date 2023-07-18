@@ -75,14 +75,4 @@ public class Post {
         comments.add(comment);
         comment.setPost(this);
     }
-
-    public void addPostGroup(PostGroup postGroup) {
-        postGroupList.add(postGroup);
-        postGroup.getPosts().add(this);
-    }
-
-    public void removePostGroup(PostGroup postGroup) {
-        postGroupList.remove(postGroup);
-        postGroup.getPosts().remove(this);
-    }
 }

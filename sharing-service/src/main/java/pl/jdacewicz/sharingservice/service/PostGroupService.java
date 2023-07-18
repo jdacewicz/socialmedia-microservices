@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
+import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.PostGroupRepository;
@@ -20,11 +21,13 @@ public class PostGroupService {
 
     private final PostGroupRepository postGroupRepository;
     private final UserService userService;
+    private final PostService postService;
 
     @Autowired
-    public PostGroupService(PostGroupRepository postGroupRepository, UserService userService) {
+    public PostGroupService(PostGroupRepository postGroupRepository, UserService userService, PostService postService) {
         this.postGroupRepository = postGroupRepository;
         this.userService = userService;
+        this.postService = postService;
     }
 
     public PostGroup getPostGroupById(long id) {
@@ -53,6 +56,22 @@ public class PostGroupService {
         postGroup.setName(name);
         FileUtils.saveFile(image, postGroup.getImage(), postGroup.getDirectoryPath());
         return postGroupRepository.save(postGroup);
+    }
+
+    public void addVisiblePostToGroup(long groupId, long postId) {
+        PostGroup group = getPostGroupById(groupId);
+        Post post = postService.getVisiblePostById(postId);
+
+        group.addPost(post);
+        postGroupRepository.save(group);
+    }
+
+    public void removePostFromGroup(long groupId, long postId) {
+        PostGroup group = getPostGroupById(groupId);
+        Post post = postService.getPostById(postId);
+
+        group.removePost(post);
+        postGroupRepository.save(group);
     }
 
     public void deleteGroup(long id) throws IOException {

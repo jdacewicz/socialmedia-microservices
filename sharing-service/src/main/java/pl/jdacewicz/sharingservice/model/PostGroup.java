@@ -34,6 +34,16 @@ public class PostGroup extends Group{
     @Builder.Default
     private List<Post> posts = new LinkedList<>();
 
+    public void addPost(Post post) {
+        this.posts.add(post);
+        post.getPostGroupList().add(this);
+    }
+
+    public void removePost(Post post) {
+        this.posts.remove(post);
+        post.getPostGroupList().remove(this);
+    }
+
     public String getImagePath() {
         if (image == null) {
             return null;

@@ -57,21 +57,6 @@ public class PostController {
         postService.changePostVisibility(id, visible);
     }
 
-    @PutMapping("/{postId}/groups/{groupId}/add")
-    @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
-    public void addPostToGroup(@PathVariable long postId,
-                               @PathVariable long groupId) {
-        postService.addPostToGroup(postId, groupId);
-    }
-    @PutMapping("/{postId}/groups/{groupId}/remove")
-    @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
-    public void removePostFromGroup(@PathVariable long postId,
-                               @PathVariable long groupId) {
-        postService.removePostFromGroup(postId, groupId);
-    }
-
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.OK)

@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Post;
-import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.repository.PostRepository;
 import pl.jdacewicz.sharingservice.util.FileUtils;
@@ -21,13 +20,11 @@ public class PostService {
     private String notFoundMessage;
 
     private final PostRepository postRepository;
-    private final PostGroupService postGroupService;
     private final UserService userService;
 
     @Autowired
-    public PostService(PostRepository postRepository, PostGroupService postGroupService, UserService userService) {
+    public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
-        this.postGroupService = postGroupService;
         this.userService = userService;
     }
 
@@ -59,26 +56,6 @@ public class PostService {
     @Transactional
     public void changePostVisibility(long id, boolean visible) {
         postRepository.setVisibleById(id, visible);
-    }
-
-    public void addPostToGroup(long postId, long groupId) {
-        PostGroup group = postGroupService.getPostGroupById(groupId);
-
-        postRepository.findById(postId)
-                .map(post -> {
-                    post.addPostGroup(group);
-                    return postRepository.save(post);
-                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
-    }
-
-    public void removePostFromGroup(long postId, long groupId) {
-        PostGroup group = postGroupService.getPostGroupById(groupId);
-
-        postRepository.findById(postId)
-                .map(post -> {
-                    post.removePostGroup(group);
-                    return postRepository.save(post);
-                }).orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
     public void deletePost(long id) throws IOException {

@@ -58,6 +58,21 @@ public class PostGroupController {
         return postGroupMapper.convertToDto(updatedGroup);
     }
 
+    @PutMapping("/{groupId}/posts/{postId}/add")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    public void addPostToGroup(@PathVariable long postId,
+                               @PathVariable long groupId) {
+        postGroupService.addVisiblePostToGroup(groupId, postId);
+    }
+    @PutMapping("/{groupId}/posts/{postId}/remove")
+    @PreAuthorize("hasRole('user')")
+    @ResponseStatus(HttpStatus.OK)
+    public void removePostFromGroup(@PathVariable long postId,
+                                    @PathVariable long groupId) {
+        postGroupService.removePostFromGroup(groupId, postId);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.OK)
