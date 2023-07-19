@@ -42,8 +42,8 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@AuthenticationPrincipal Jwt jwt,
-                              @RequestPart MultipartFile profileImage) throws IOException {
-        User createdUser = userService.createUser(jwt.getClaim("email"), profileImage);
+                              @RequestPart MultipartFile profilePicture) throws IOException {
+        User createdUser = userService.createUser(jwt.getClaim("email"), profilePicture);
         return userMapper.convertToDto(createdUser, jwt);
     }
 
