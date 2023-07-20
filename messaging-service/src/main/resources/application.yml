@@ -31,3 +31,7 @@ eureka:
 
 server:
   port: 0
+
+message:
+  not-found:
+    user: Could not find user.
