@@ -3,9 +3,13 @@ package pl.jdacewicz.messagingservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.messagingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.messagingservice.model.User;
 import pl.jdacewicz.messagingservice.repository.UserRepository;
+import pl.jdacewicz.messagingservice.utils.FileUtils;
+
+import java.io.IOException;
 
 @Service
 public class UserService {
@@ -23,5 +27,18 @@ public class UserService {
     public User getUserById(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
+    }
+
+    public User createUser(String email, MultipartFile profilePicture) throws IOException {
+        String newFileName = FileUtils.generateFileName(profilePicture.getOriginalFilename());
+
+        User user = User.builder()
+                .email(email)
+                .profilePicture(newFileName)
+                .build();
+        User createdUser = userRepository.save(user);
+
+        FileUtils.saveFile(profilePicture, newFileName, user.getDirectoryPath());
+        return createdUser;
     }
 }

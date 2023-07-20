@@ -1,9 +1,6 @@
 package pl.jdacewicz.messagingservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "t_users")
 public class User {
+
+    public final static String USERS_DIRECTORY_PATH = "uploads/messaging/profiles";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +23,8 @@ public class User {
     private String email;
 
     private String profilePicture;
+
+    public String getDirectoryPath() {
+        return USERS_DIRECTORY_PATH + "/" + id;
+    }
 }
