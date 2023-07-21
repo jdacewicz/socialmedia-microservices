@@ -31,7 +31,6 @@ public class ReactionController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public ReactionDto getReaction(@PathVariable int id) {
         Reaction reaction = reactionService.getReactionById(id);
         return reactionMapper.convertToDto(reaction);
@@ -39,7 +38,6 @@ public class ReactionController {
 
     @GetMapping
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public Page<ReactionDto> getAllReactions(@RequestParam(required = false) String name,
                                              @RequestParam(defaultValue = "0") int page,
                                              @RequestParam(defaultValue = "8") int size,
@@ -60,7 +58,6 @@ public class ReactionController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public ReactionDto updateReaction(@PathVariable int id,
                                       @RequestPart String name,
                                       @RequestPart MultipartFile image) throws IOException {
@@ -70,7 +67,6 @@ public class ReactionController {
 
     @PutMapping("/{reactionId}/posts/{postId}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void reactToPost(@PathVariable long postId,
                             @PathVariable int reactionId) {
         reactionService.reactToVisiblePost(reactionId, postId);
@@ -78,7 +74,6 @@ public class ReactionController {
 
     @PutMapping("/{reactionId}/advertisements/{advertisementId}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void reactToAdvertisement(@PathVariable int advertisementId,
                                      @PathVariable int reactionId) {
         reactionService.reactToActiveAdvertisement(reactionId, advertisementId);
@@ -86,7 +81,6 @@ public class ReactionController {
 
     @PutMapping("/{reactionId}/comments/{commentId}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void reactToComment(@PathVariable long commentId,
                                @PathVariable int reactionId) {
         reactionService.reactToComment(reactionId, commentId);
@@ -94,7 +88,6 @@ public class ReactionController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public void deleteReaction(@PathVariable int id) throws IOException {
         reactionService.deleteReaction(id);
     }

@@ -32,7 +32,6 @@ public class AdvertisementController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public AdvertisementDto getActiveAdvertisementById(@PathVariable int id) {
         Advertisement advertisement = advertisementService.getActiveAdvertisementById(id);
         return advertisementMapper.convertToDto(advertisement);
@@ -40,7 +39,6 @@ public class AdvertisementController {
 
     @GetMapping
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementDto> getAdvertisements(@RequestParam(required = false) String name,
                                                     @RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "8") int size,
@@ -63,7 +61,6 @@ public class AdvertisementController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public AdvertisementDto updateAdvertisement(@PathVariable int id,
                                                 @RequestPart String userEmail,
                                                 @RequestPart String name,
@@ -75,7 +72,6 @@ public class AdvertisementController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable int id) throws IOException {
         advertisementService.deleteAdvertisement(id);
     }

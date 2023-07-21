@@ -2,7 +2,6 @@ package pl.jdacewicz.sharingservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +32,6 @@ public class CommentController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public CommentDto getVisibleCommentById(@PathVariable long id) {
         Comment comment = commentService.getVisibleCommentById(id);
         return commentMapper.convertToDto(comment);
@@ -41,7 +39,6 @@ public class CommentController {
 
     @GetMapping("/post/{postId}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public Page<CommentDto> getPostComments(@PathVariable long postId,
                                             @RequestParam(defaultValue = "true") boolean visible,
                                             @RequestParam(defaultValue = "0") int page,
@@ -54,7 +51,6 @@ public class CommentController {
 
     @PostMapping(value = "/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public CommentDto commentPost(@AuthenticationPrincipal Jwt jwt,
                             @PathVariable long postId,
                             @RequestPart String content,
@@ -65,7 +61,6 @@ public class CommentController {
 
     @PostMapping(value = "/advertisements/{advertisementId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public CommentDto commentAdvertisement(@AuthenticationPrincipal Jwt jwt,
                                   @PathVariable int advertisementId,
                                   @RequestPart String content,
@@ -76,7 +71,6 @@ public class CommentController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public void changePostVisibility(@PathVariable long id,
                                      @RequestParam boolean visible) {
         commentService.changeCommentVisibility(id, visible);
@@ -84,7 +78,6 @@ public class CommentController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public void deleteComment(@PathVariable long id) throws IOException {
         commentService.deleteComment(id);
     }

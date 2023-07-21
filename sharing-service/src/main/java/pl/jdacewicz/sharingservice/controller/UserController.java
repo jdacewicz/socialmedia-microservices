@@ -32,7 +32,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public UserDto getUser(@PathVariable long id) {
         User user = userService.getUserById(id);
         return userMapper.convertToDto(user);
@@ -49,7 +48,6 @@ public class UserController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,
                                      @RequestPart MultipartFile profilePicture) throws IOException {
        userService.updateProfilePicture(jwt.getClaim("email"), profilePicture);

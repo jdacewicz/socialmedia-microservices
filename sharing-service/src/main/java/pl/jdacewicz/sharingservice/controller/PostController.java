@@ -32,7 +32,6 @@ public class PostController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public PostDto getPostById(@PathVariable long id) {
         Post post = postService.getVisiblePostById(id);
         return postMapper.convertToDto(post);
@@ -51,7 +50,6 @@ public class PostController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public void changePostVisibility(@PathVariable long id,
                                      @RequestParam boolean visible) {
         postService.changePostVisibility(id, visible);
@@ -59,7 +57,6 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('admin')")
-    @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable long id) throws IOException {
         postService.deletePost(id);
     }

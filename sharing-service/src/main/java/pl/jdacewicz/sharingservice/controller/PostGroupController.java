@@ -50,7 +50,6 @@ public class PostGroupController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public PostGroupDto updateGroup(@PathVariable long id,
                                     @RequestPart String name,
                                     @RequestPart MultipartFile image) throws IOException {
@@ -60,14 +59,12 @@ public class PostGroupController {
 
     @PutMapping("/{groupId}/posts/{postId}/add")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void addPostToGroup(@PathVariable long postId,
                                @PathVariable long groupId) {
         postGroupService.addVisiblePostToGroup(groupId, postId);
     }
     @PutMapping("/{groupId}/posts/{postId}/remove")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void removePostFromGroup(@PathVariable long postId,
                                     @PathVariable long groupId) {
         postGroupService.removePostFromGroup(groupId, postId);
@@ -75,7 +72,6 @@ public class PostGroupController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('user')")
-    @ResponseStatus(HttpStatus.OK)
     public void deleteGroup(@PathVariable long id) throws IOException {
         postGroupService.deleteGroup(id);
     }
