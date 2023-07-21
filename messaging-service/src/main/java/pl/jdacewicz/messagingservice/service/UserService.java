@@ -29,6 +29,11 @@ public class UserService {
                 .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
+    }
+
     public User createUser(String email, MultipartFile profilePicture) throws IOException {
         String newFileName = FileUtils.generateFileName(profilePicture.getOriginalFilename());
 
@@ -40,5 +45,11 @@ public class UserService {
 
         FileUtils.saveFile(profilePicture, newFileName, user.getDirectoryPath());
         return createdUser;
+    }
+
+    public void updateProfilePicture(String email, MultipartFile profilePicture) throws IOException {
+        User user = getUserByEmail(email);
+
+        FileUtils.saveFile(profilePicture, user.getProfilePicture(), user.getDirectoryPath());
     }
 }

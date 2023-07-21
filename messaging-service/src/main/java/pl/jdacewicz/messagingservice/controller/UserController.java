@@ -38,4 +38,11 @@ public class UserController {
                            @RequestPart MultipartFile profilePicture) throws IOException {
         return userService.createUser(jwt.getClaim("email"), profilePicture);
     }
+
+    @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,
+                                     @RequestPart MultipartFile profilePicture) throws IOException {
+        userService.updateProfilePicture(jwt.getClaim("email"), profilePicture);
+    }
 }
