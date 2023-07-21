@@ -52,4 +52,20 @@ public class UserService {
 
         FileUtils.saveFile(profilePicture, user.getProfilePicture(), user.getDirectoryPath());
     }
+
+    public void addUserToFriends(String email, long id) {
+        User loggedUser = getUserByEmail(email);
+        User addedUser = getUserById(id);
+
+        loggedUser.getFriends().add(addedUser);
+        userRepository.save(loggedUser);
+    }
+
+    public void removeUserFromFriends(String email, long id) {
+        User loggedUser = getUserByEmail(email);
+        User removedUser = getUserById(id);
+
+        loggedUser.getFriends().remove(removedUser);
+        userRepository.save(loggedUser);
+    }
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Data
 @Builder
@@ -23,6 +25,13 @@ public class User {
     private String email;
 
     private String profilePicture;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "friends", joinColumns = {
+            @JoinColumn(name = "idA")}, inverseJoinColumns = {
+            @JoinColumn(name = "idB")
+    })
+    private Set<User> friends;
 
     public String getDirectoryPath() {
         return USERS_DIRECTORY_PATH + "/" + id;

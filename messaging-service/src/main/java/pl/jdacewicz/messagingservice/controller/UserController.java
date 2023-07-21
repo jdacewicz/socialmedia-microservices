@@ -27,7 +27,6 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public User getUser(@PathVariable long id) {
         return userService.getUserById(id);
     }
@@ -40,9 +39,21 @@ public class UserController {
     }
 
     @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.OK)
     public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,
                                      @RequestPart MultipartFile profilePicture) throws IOException {
         userService.updateProfilePicture(jwt.getClaim("email"), profilePicture);
     }
+
+    @PutMapping("/friends/{id}/add")
+    public void addUserToFriends(@AuthenticationPrincipal Jwt jwt,
+                                    @PathVariable long id) {
+        userService.addUserToFriends(jwt.getClaim("email"), id);
+    }
+
+    @PutMapping("/friends/{id}/remove")
+    public void removeUserFromFriends(@AuthenticationPrincipal Jwt jwt,
+                                 @PathVariable long id) {
+        userService.removeUserFromFriends(jwt.getClaim("email"), id);
+    }
+
 }
