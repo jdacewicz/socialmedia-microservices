@@ -16,7 +16,7 @@ import java.io.IOException;
 @Service
 public class PostGroupService {
 
-    @Value("${message.not-found.post-group}")
+    @Value("${message.post-group.not-found}")
     private String notFoundMessage;
 
     private final PostGroupRepository postGroupRepository;

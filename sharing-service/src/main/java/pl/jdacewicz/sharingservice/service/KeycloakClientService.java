@@ -15,7 +15,7 @@ public class KeycloakClientService {
     @Value("${spring.security.oauth2.resourceserver.keycloak.realm}")
     private String realm;
 
-    @Value("${message.not-found.user}")
+    @Value("${message.user.not-found}")
     private String notFoundMessage;
 
     private final Keycloak keycloak;

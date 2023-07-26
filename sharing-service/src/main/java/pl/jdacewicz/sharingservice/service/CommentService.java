@@ -18,7 +18,7 @@ import java.io.IOException;
 @Service
 public class CommentService {
 
-    @Value("${message.not-found.comment}")
+    @Value("${message.comment.not-found}")
     private String notFoundMessage;
 
     private final CommentRepository commentRepository;

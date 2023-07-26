@@ -14,7 +14,7 @@ import java.io.IOException;
 @Service
 public class UserService {
 
-    @Value("${message.not-found.user}")
+    @Value("${message.user.not-found}")
     private String notFoundMessage;
 
     private final UserRepository userRepository;

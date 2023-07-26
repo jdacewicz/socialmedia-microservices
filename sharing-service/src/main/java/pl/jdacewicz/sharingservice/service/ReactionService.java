@@ -20,7 +20,7 @@ import java.io.IOException;
 @Service
 public class ReactionService {
 
-    @Value("${message.not-found.reaction}")
+    @Value("${message.reaction.not-found}")
     private String notFoundMessage;
 
     private final ReactionRepository reactionRepository;

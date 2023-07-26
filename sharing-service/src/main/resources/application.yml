@@ -33,10 +33,16 @@ server:
   port: 0
 
 message:
-  not-found:
-    advertisement: Could not find advertisement.
-    comment: Could not find comment.
-    post: Could not find group.
-    post-group: Could not find group.
-    reaction: Could not find reaction.
-    user: Could not find user.
+  advertisement:
+    not-found: Could not find advertisement.
+  comment:
+    not-found: Could not find comment.
+  post:
+    not-found: Could not find group.
+  post-group:
+    not-found: Could not find group.
+  reaction:
+    not-found: Could not find reaction.
+  user:
+    not-found: Could not find user.
+

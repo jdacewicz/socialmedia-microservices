@@ -18,7 +18,7 @@ import java.io.IOException;
 @Service
 public class AdvertisementService {
 
-    @Value("${message.not-found.advertisement}")
+    @Value("${message.advertisement.not-found}")
     private String notFoundMessage;
 
     private final AdvertisementRepository advertisementRepository;

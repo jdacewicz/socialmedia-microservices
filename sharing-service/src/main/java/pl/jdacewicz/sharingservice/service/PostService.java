@@ -16,7 +16,7 @@ import java.io.IOException;
 @Service
 public class PostService {
 
-    @Value("${message.not-found.post}")
+    @Value("${message.post.not-found}")
     private String notFoundMessage;
 
     private final PostRepository postRepository;
