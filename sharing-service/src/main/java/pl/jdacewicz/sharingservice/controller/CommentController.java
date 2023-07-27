@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.CommentDto;
+import pl.jdacewicz.sharingservice.dto.CommentRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.CommentMapper;
 import pl.jdacewicz.sharingservice.model.Comment;
 import pl.jdacewicz.sharingservice.service.CommentService;
@@ -52,20 +54,20 @@ public class CommentController {
     @PostMapping(value = "/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     public CommentDto commentPost(@AuthenticationPrincipal Jwt jwt,
-                            @PathVariable long postId,
-                            @RequestPart String content,
-                            @RequestPart MultipartFile image) throws IOException {
-        Comment comment = commentService.commentPost(jwt.getClaim("email"), postId, content, image);
+                                  @PathVariable long postId,
+                                  @Valid @RequestPart CommentRequest request,
+                                  @RequestPart MultipartFile image) throws IOException {
+        Comment comment = commentService.commentPost(jwt.getClaim("email"), postId, request, image);
         return commentMapper.convertToDto(comment);
     }
 
     @PostMapping(value = "/advertisements/{advertisementId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     public CommentDto commentAdvertisement(@AuthenticationPrincipal Jwt jwt,
-                                  @PathVariable int advertisementId,
-                                  @RequestPart String content,
-                                  @RequestPart MultipartFile image) throws IOException {
-        Comment comment = commentService.commentAdvertisement(jwt.getClaim("email"), advertisementId, content, image);
+                                           @PathVariable int advertisementId,
+                                           @Valid @RequestPart CommentRequest request,
+                                           @RequestPart MultipartFile image) throws IOException {
+        Comment comment = commentService.commentAdvertisement(jwt.getClaim("email"), advertisementId, request, image);
         return commentMapper.convertToDto(comment);
     }
 

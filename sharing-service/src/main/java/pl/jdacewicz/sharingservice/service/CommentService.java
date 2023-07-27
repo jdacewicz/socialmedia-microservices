@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.dto.CommentRequest;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.*;
 import pl.jdacewicz.sharingservice.repository.CommentRepository;
@@ -50,13 +51,13 @@ public class CommentService {
         return commentRepository.findAllByPostIdAndVisible(postId, visible, paging);
     }
 
-    public Comment commentPost(String userEmail, long postId, String content, MultipartFile image) throws IOException {
+    public Comment commentPost(String userEmail, long postId, CommentRequest request, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         Post post = postService.getVisiblePostById(postId);
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         Comment comment = Comment.builder()
-                .content(content)
+                .content(request.content())
                 .image(newFileName)
                 .creator(user)
                 .post(post)
@@ -68,14 +69,14 @@ public class CommentService {
         return createdComment;
     }
 
-    public Comment commentAdvertisement(String userEmail, int advertisementId, String content, MultipartFile image)
+    public Comment commentAdvertisement(String userEmail, int advertisementId, CommentRequest request, MultipartFile image)
             throws IOException {
         User user = userService.getUserByEmail(userEmail);
         Advertisement advertisement = advertisementService.getActiveAdvertisementById(advertisementId);
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         Comment comment = Comment.builder()
-                .content(content)
+                .content(request.content())
                 .image(newFileName)
                 .creator(user)
                 .advertisement(advertisement)
