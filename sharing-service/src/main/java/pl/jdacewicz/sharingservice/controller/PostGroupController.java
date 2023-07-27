@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
+import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.service.PostGroupService;
@@ -42,18 +44,18 @@ public class PostGroupController {
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostGroupDto createGroup(@AuthenticationPrincipal Jwt jwt,
-                                    @RequestPart String name,
+                                    @Valid @RequestPart PostGroupRequest request,
                                     @RequestPart MultipartFile image) throws IOException {
-        PostGroup createdGroup = postGroupService.createGroup(jwt.getClaim("email"), name, image);
+        PostGroup createdGroup = postGroupService.createGroup(jwt.getClaim("email"), request, image);
         return postGroupMapper.convertToDto(createdGroup);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     public PostGroupDto updateGroup(@PathVariable long id,
-                                    @RequestPart String name,
+                                    @Valid @RequestPart PostGroupRequest request,
                                     @RequestPart MultipartFile image) throws IOException {
-        PostGroup updatedGroup = postGroupService.updateGroup(id, name, image);
+        PostGroup updatedGroup = postGroupService.updateGroup(id, request, image);
         return postGroupMapper.convertToDto(updatedGroup);
     }
 

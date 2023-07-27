@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.model.PostGroup;
@@ -35,12 +36,12 @@ public class PostGroupService {
                 .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
-    public PostGroup createGroup(String userEmail, String name, MultipartFile image) throws IOException {
+    public PostGroup createGroup(String userEmail, PostGroupRequest request, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         PostGroup postGroup = PostGroup.builder()
-                .name(name)
+                .name(request.name())
                 .image(newFileName)
                 .creator(user)
                 .build();
@@ -50,10 +51,10 @@ public class PostGroupService {
         return createdGroup;
     }
 
-    public PostGroup updateGroup(long id, String name, MultipartFile image) throws IOException {
+    public PostGroup updateGroup(long id, PostGroupRequest request, MultipartFile image) throws IOException {
         PostGroup postGroup = getPostGroupById(id);
 
-        postGroup.setName(name);
+        postGroup.setName(request.name());
         FileUtils.saveFile(image, postGroup.getImage(), postGroup.getDirectoryPath());
         return postGroupRepository.save(postGroup);
     }
