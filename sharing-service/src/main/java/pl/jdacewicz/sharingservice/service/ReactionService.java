@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Advertisement;
 import pl.jdacewicz.sharingservice.model.Comment;
@@ -48,11 +49,11 @@ public class ReactionService {
                 reactionRepository.findAll(paging) : reactionRepository.findAllByName(name, paging);
     }
 
-    public Reaction createReaction(String name, MultipartFile image) throws IOException {
+    public Reaction createReaction(ReactionRequest request, MultipartFile image) throws IOException {
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         Reaction reaction = Reaction.builder()
-                .name(name)
+                .name(request.name())
                 .image(newFileName)
                 .build();
         Reaction createdReaction = reactionRepository.save(reaction);
@@ -85,10 +86,10 @@ public class ReactionService {
         reactionRepository.save(reaction);
     }
 
-    public Reaction updateReaction(int id, String name, MultipartFile image) throws IOException {
+    public Reaction updateReaction(int id, ReactionRequest request, MultipartFile image) throws IOException {
         Reaction reaction = getReactionById(id);
 
-        reaction.setName(name);
+        reaction.setName(request.name());
         FileUtils.saveFile(image, reaction.getImage(), reaction.getDirectoryPath());
         return reactionRepository.save(reaction);
     }

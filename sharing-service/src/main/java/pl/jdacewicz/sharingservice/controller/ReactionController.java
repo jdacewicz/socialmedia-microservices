@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.ReactionDto;
+import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.ReactionMapper;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.service.ReactionService;
@@ -50,18 +52,18 @@ public class ReactionController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReactionDto createReaction(@RequestPart String name,
+    public ReactionDto createReaction(@Valid @RequestPart ReactionRequest request,
                                       @RequestPart MultipartFile image) throws IOException {
-        Reaction createdReaction = reactionService.createReaction(name, image);
+        Reaction createdReaction = reactionService.createReaction(request, image);
         return reactionMapper.convertToDto(createdReaction);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     public ReactionDto updateReaction(@PathVariable int id,
-                                      @RequestPart String name,
+                                      @Valid @RequestPart ReactionRequest request,
                                       @RequestPart MultipartFile image) throws IOException {
-        Reaction updatedReaction = reactionService.updateReaction(id, name, image);
+        Reaction updatedReaction = reactionService.updateReaction(id, request, image);
         return reactionMapper.convertToDto(updatedReaction);
     }
 
