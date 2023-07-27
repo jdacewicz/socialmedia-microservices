@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.exception.handler;
 
+import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -55,4 +56,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, status);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ApiError apiError = new ApiError(status.value(), ex.getMessage());
+        return new ResponseEntity<>(apiError, status);
+    }
 }
