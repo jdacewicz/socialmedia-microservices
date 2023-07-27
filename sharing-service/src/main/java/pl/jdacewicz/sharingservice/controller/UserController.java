@@ -6,12 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.UserDto;
 import pl.jdacewicz.sharingservice.dto.mapper.UserMapper;
 import pl.jdacewicz.sharingservice.model.User;
 import pl.jdacewicz.sharingservice.service.UserService;
+import pl.jdacewicz.sharingservice.validation.ValidFile;
 
 import java.io.IOException;
 
@@ -19,6 +21,7 @@ import java.io.IOException;
 @RequestMapping(value = "${spring.application.api-url}" + "/users",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -41,7 +44,7 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@AuthenticationPrincipal Jwt jwt,
-                              @RequestPart MultipartFile profilePicture) throws IOException {
+                              @ValidFile @RequestPart MultipartFile profilePicture) throws IOException {
         User createdUser = userService.createUser(jwt.getClaim("email"), profilePicture);
         return userMapper.convertToDto(createdUser, jwt);
     }
@@ -49,7 +52,7 @@ public class UserController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('user')")
     public void updateProfilePicture(@AuthenticationPrincipal Jwt jwt,
-                                     @RequestPart MultipartFile profilePicture) throws IOException {
+                                     @ValidFile @RequestPart MultipartFile profilePicture) throws IOException {
        userService.updateProfilePicture(jwt.getClaim("email"), profilePicture);
     }
 }

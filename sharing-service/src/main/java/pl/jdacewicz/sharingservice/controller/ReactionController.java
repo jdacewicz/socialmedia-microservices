@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.ReactionDto;
@@ -13,6 +14,7 @@ import pl.jdacewicz.sharingservice.dto.ReactionRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.ReactionMapper;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.service.ReactionService;
+import pl.jdacewicz.sharingservice.validation.ValidFile;
 
 import java.io.IOException;
 
@@ -20,6 +22,7 @@ import java.io.IOException;
 @RequestMapping(value = "${spring.application.api-url}" + "/reactions",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class ReactionController {
 
     private final ReactionService reactionService;
@@ -53,7 +56,7 @@ public class ReactionController {
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
     public ReactionDto createReaction(@Valid @RequestPart ReactionRequest request,
-                                      @RequestPart MultipartFile image) throws IOException {
+                                      @ValidFile @RequestPart MultipartFile image) throws IOException {
         Reaction createdReaction = reactionService.createReaction(request, image);
         return reactionMapper.convertToDto(createdReaction);
     }
@@ -62,7 +65,7 @@ public class ReactionController {
     @PreAuthorize("hasRole('admin')")
     public ReactionDto updateReaction(@PathVariable int id,
                                       @Valid @RequestPart ReactionRequest request,
-                                      @RequestPart MultipartFile image) throws IOException {
+                                      @ValidFile @RequestPart MultipartFile image) throws IOException {
         Reaction updatedReaction = reactionService.updateReaction(id, request, image);
         return reactionMapper.convertToDto(updatedReaction);
     }

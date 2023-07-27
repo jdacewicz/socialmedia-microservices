@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.PostGroupDto;
@@ -14,6 +15,7 @@ import pl.jdacewicz.sharingservice.dto.PostGroupRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.PostGroupMapper;
 import pl.jdacewicz.sharingservice.model.PostGroup;
 import pl.jdacewicz.sharingservice.service.PostGroupService;
+import pl.jdacewicz.sharingservice.validation.ValidFile;
 
 import java.io.IOException;
 
@@ -21,6 +23,7 @@ import java.io.IOException;
 @RequestMapping(value = "${spring.application.api-url}" + "/posts/groups",
         headers = "X-API-VERSION=1",
         produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class PostGroupController {
 
     private final PostGroupService postGroupService;
@@ -45,7 +48,7 @@ public class PostGroupController {
     @ResponseStatus(HttpStatus.CREATED)
     public PostGroupDto createGroup(@AuthenticationPrincipal Jwt jwt,
                                     @Valid @RequestPart PostGroupRequest request,
-                                    @RequestPart MultipartFile image) throws IOException {
+                                    @ValidFile @RequestPart MultipartFile image) throws IOException {
         PostGroup createdGroup = postGroupService.createGroup(jwt.getClaim("email"), request, image);
         return postGroupMapper.convertToDto(createdGroup);
     }
@@ -54,7 +57,7 @@ public class PostGroupController {
     @PreAuthorize("hasRole('user')")
     public PostGroupDto updateGroup(@PathVariable long id,
                                     @Valid @RequestPart PostGroupRequest request,
-                                    @RequestPart MultipartFile image) throws IOException {
+                                    @ValidFile @RequestPart MultipartFile image) throws IOException {
         PostGroup updatedGroup = postGroupService.updateGroup(id, request, image);
         return postGroupMapper.convertToDto(updatedGroup);
     }

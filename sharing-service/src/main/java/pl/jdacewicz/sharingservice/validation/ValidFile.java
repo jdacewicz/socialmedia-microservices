@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {FileValidator.class})
 public @interface ValidFile {
 
-    String message() default "";
+    String message() default "Only PNG, JPG and JPEG files are allowed.";
 
     Class<?>[] groups() default {};
 
