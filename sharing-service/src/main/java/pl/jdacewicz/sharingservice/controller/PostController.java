@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.PostDto;
+import pl.jdacewicz.sharingservice.dto.PostRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.PostMapper;
 import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.service.PostService;
@@ -41,10 +43,10 @@ public class PostController {
     @PreAuthorize("hasRole('user')")
     @ResponseStatus(HttpStatus.CREATED)
     public PostDto createPost(@AuthenticationPrincipal Jwt jwt,
-                              @RequestPart String content,
+                              @Valid @RequestPart PostRequest request,
                               @RequestPart MultipartFile image) throws IOException {
         String userEmail = jwt.getClaim("email");
-        Post createdPost = postService.createPost(userEmail, content, image);
+        Post createdPost = postService.createPost(userEmail, request, image);
         return postMapper.convertToDto(createdPost);
     }
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.dto.PostRequest;
 import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Post;
 import pl.jdacewicz.sharingservice.model.User;
@@ -38,13 +39,13 @@ public class PostService {
                 .orElseThrow(() -> new RecordNotFoundException(notFoundMessage));
     }
 
-    public Post createPost(String userEmail, String content, MultipartFile image) throws IOException {
+    public Post createPost(String userEmail, PostRequest request, MultipartFile image) throws IOException {
         User user = userService.getUserByEmail(userEmail);
         String newFileName = FileUtils.generateFileName(image.getOriginalFilename());
 
         Post post = Post.builder()
                 .creator(user)
-                .content(content)
+                .content(request.content())
                 .image(newFileName)
                 .build();
         Post createdPost = postRepository.save(post);
