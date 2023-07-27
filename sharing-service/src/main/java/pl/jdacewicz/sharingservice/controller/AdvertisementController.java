@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.dto.AdvertisementDto;
+import pl.jdacewicz.sharingservice.dto.AdvertisementRequest;
 import pl.jdacewicz.sharingservice.dto.mapper.AdvertisementMapper;
 import pl.jdacewicz.sharingservice.model.Advertisement;
 import pl.jdacewicz.sharingservice.service.AdvertisementService;
@@ -51,22 +53,18 @@ public class AdvertisementController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     @ResponseStatus(HttpStatus.CREATED)
-    public AdvertisementDto createAdvertisement(@RequestPart String userEmail,
-                                                @RequestPart String name,
-                                                @RequestPart String content,
+    public AdvertisementDto createAdvertisement(@Valid @RequestPart AdvertisementRequest request,
                                                 @RequestPart MultipartFile image) throws IOException {
-        Advertisement createdAd = advertisementService.createAdvertisement(userEmail, name, content, image);
+        Advertisement createdAd = advertisementService.createAdvertisement(request, image);
         return advertisementMapper.convertToDto(createdAd);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('admin')")
     public AdvertisementDto updateAdvertisement(@PathVariable int id,
-                                                @RequestPart String userEmail,
-                                                @RequestPart String name,
-                                                @RequestPart String content,
+                                                @Valid @RequestPart AdvertisementRequest request,
                                                 @RequestPart MultipartFile image) throws IOException {
-        Advertisement updatedAd = advertisementService.updateAdvertisement(userEmail, id, name, content, image);
+        Advertisement updatedAd = advertisementService.updateAdvertisement(id, request, image);
         return advertisementMapper.convertToDto(updatedAd);
     }
 
