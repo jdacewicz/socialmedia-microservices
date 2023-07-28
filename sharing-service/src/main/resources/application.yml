@@ -23,6 +23,10 @@ spring:
             password: admin
         jwt:
           issuer-uri: ${spring.security.oauth2.resourceserver.keycloak.server-url}/realms/${spring.security.oauth2.resourceserver.keycloak.realm}
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 3MB
 
 eureka:
   client:
