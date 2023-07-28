@@ -2,6 +2,7 @@ package pl.jdacewicz.sharingservice.util;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.exception.InvalidPathException;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,10 @@ import java.io.InputStream;
 public class FileUtils {
 
     public static void saveFile(MultipartFile file, String fileName, String fileDir) throws IOException {
+        if (fileName == null || fileDir == null ||
+                fileName.isBlank() || fileDir.isBlank()) {
+            throw new InvalidPathException();
+        }
         InputStream inputStream = file.getInputStream();
         File directory = new File(fileDir + "/" + fileName);
         org.apache.commons.io.FileUtils.copyInputStreamToFile(inputStream, directory);
