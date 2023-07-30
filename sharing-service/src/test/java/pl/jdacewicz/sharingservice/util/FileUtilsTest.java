@@ -84,4 +84,69 @@ class FileUtilsTest {
 
         assertTrue(new File(fileDir + "/" + fileName).isFile());
     }
+
+    @Test
+    @DisplayName("Given fileName and null fileDir " +
+            "When deleting file " +
+            "Then should throw InvalidPathException")
+    void deletingFileByFileNameAndNullFileDirShouldThrowException() {
+        String fileDir = null;
+        String fileName = "newName.txt";
+
+        assertThrows(InvalidPathException.class,
+                () -> FileUtils.deleteFile(fileDir, fileName));
+    }
+
+    @Test
+    @DisplayName("Given fileName and empty fileDir " +
+            "When deleting file " +
+            "Then should throw InvalidPathException")
+    void deletingFileByFileNameAndEmptyFileDirShouldThrowException() {
+        String fileDir = "";
+        String fileName = "newName.txt";
+
+        assertThrows(InvalidPathException.class,
+                () -> FileUtils.deleteFile(fileDir, fileName));
+    }
+
+    @Test
+    @DisplayName("Given fileDir and null fileName " +
+            "When deleting file " +
+            "Then should throw InvalidPathException")
+    void deletingFileByFileDirAndNullFileNameShouldThrowException() {
+        String fileDir = "tmp";
+        String fileName = null;
+
+        assertThrows(InvalidPathException.class,
+                () -> FileUtils.deleteFile(fileDir, fileName));
+    }
+
+    @Test
+    @DisplayName("Given fileDir and empty fileName " +
+            "When deleting file " +
+            "Then should throw InvalidPathException")
+    void deletingFileByFileDirAndEmptyFileNameShouldThrowException() {
+        String fileDir = "tmp";
+        String fileName = "";
+
+        assertThrows(InvalidPathException.class,
+                () -> FileUtils.deleteFile(fileDir, fileName));
+    }
+
+    @Test
+    @DisplayName("Given fileName and fileDir " +
+            "When deleting file " +
+            "Then should delete file")
+    void deletingFileByFileDirAndFileNameShouldDeleteFile() throws IOException {
+        String fileDir = "tmp";
+        String fileName = "newName.txt";
+
+        MultipartFile testFile = new MockMultipartFile("testFile", "content".getBytes());
+        File directory = new File(fileDir + "/" + fileName);
+        org.apache.commons.io.FileUtils.copyInputStreamToFile(testFile.getInputStream(), directory);
+
+        FileUtils.deleteFile(fileDir, fileName);
+
+        assertFalse(new File(fileDir + "/" + fileName).isFile());
+    }
 }

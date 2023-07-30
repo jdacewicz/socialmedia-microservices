@@ -21,6 +21,10 @@ public class FileUtils {
     }
 
     public static void deleteFile(String fileDir, String fileName) throws IOException {
+        if (fileName == null || fileDir == null ||
+                fileName.isBlank() || fileDir.isBlank()) {
+            throw new InvalidPathException();
+        }
         File directory = new File(fileDir + "/" + fileName);
         org.apache.commons.io.FileUtils.delete(directory);
     }
