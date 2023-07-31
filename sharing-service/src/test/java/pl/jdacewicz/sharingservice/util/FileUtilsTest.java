@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.exception.InvalidFileNameException;
 import pl.jdacewicz.sharingservice.exception.InvalidPathException;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileUtilsTest {
+
     @AfterEach
     void cleanUp() throws IOException {
         File directory = new File("tmp");
@@ -188,5 +190,63 @@ class FileUtilsTest {
         FileUtils.deleteDirectory(folderDir);
 
         assertFalse(new File(folderDir).isDirectory());
+    }
+
+    @Test
+    @DisplayName("Given null originalFileName " +
+            "When generating fileName " +
+            "Then should throw InvalidFileNameException")
+    void generatingFileNameByNullOriginalNameShouldThrowException() {
+        String originalFileName = null;
+
+        assertThrows(InvalidFileNameException.class,
+                () -> FileUtils.generateFileName(originalFileName));
+    }
+
+    @Test
+    @DisplayName("Given empty originalFileName " +
+            "When generating fileName " +
+            "Then should throw InvalidFileNameException")
+    void generatingFileNameByEmptyOriginalNameShouldThrowException() {
+        String originalFileName = "";
+
+        assertThrows(InvalidFileNameException.class,
+                () -> FileUtils.generateFileName(originalFileName));
+    }
+
+    @Test
+    @DisplayName("Given originalFileName with extension " +
+            "When generating fileName " +
+            "Then should return new fileName")
+    void generatingFileNameByOriginalNameWithExtensionShouldReturnGeneratedFileName() {
+        String originalFileName = "file.jpg";
+
+        String newFileName = FileUtils.generateFileName(originalFileName);
+
+        assertNotEquals(originalFileName, newFileName);
+    }
+
+    @Test
+    @DisplayName("Given originalFileName without extension " +
+            "When generating fileName " +
+            "Then should return new fileName")
+    void generatingFileNameByOriginalNameWithoutExtensionShouldReturnGeneratedFileName() {
+        String originalFileName = "file";
+
+        String newFileName = FileUtils.generateFileName(originalFileName);
+
+        assertNotEquals(originalFileName, newFileName);
+    }
+
+    @Test
+    @DisplayName("Given originalFileName with only extension " +
+            "When generating fileName " +
+            "Then should return new fileName")
+    void generatingFileNameByOriginalNameWithOnlyExtensionShouldReturnGeneratedFileName() {
+        String originalFileName = ".jpg";
+
+        String newFileName = FileUtils.generateFileName(originalFileName);
+
+        assertNotEquals(originalFileName, newFileName);
     }
 }

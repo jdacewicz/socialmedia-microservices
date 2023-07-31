@@ -2,6 +2,7 @@ package pl.jdacewicz.sharingservice.util;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jdacewicz.sharingservice.exception.InvalidFileNameException;
 import pl.jdacewicz.sharingservice.exception.InvalidPathException;
 
 import java.io.File;
@@ -38,8 +39,14 @@ public class FileUtils {
     }
 
     public static String generateFileName(String originalName) {
+        String extension = "";
+        if (originalName == null || originalName.isBlank()) {
+            throw new InvalidFileNameException();
+        }
         int lastDotIndex = originalName.lastIndexOf('.');
-        String extension = originalName.substring(lastDotIndex);
+        if (lastDotIndex >= 0) {
+            extension = originalName.substring(lastDotIndex);
+        }
 
         return RandomStringUtils.randomAlphanumeric(16) + extension;
     }
