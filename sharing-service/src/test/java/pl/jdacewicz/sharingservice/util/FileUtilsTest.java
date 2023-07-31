@@ -9,6 +9,9 @@ import pl.jdacewicz.sharingservice.exception.InvalidPathException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -148,5 +151,42 @@ class FileUtilsTest {
         FileUtils.deleteFile(fileDir, fileName);
 
         assertFalse(new File(fileDir + "/" + fileName).isFile());
+    }
+
+    @Test
+    @DisplayName("Given null folderDir " +
+            "When deleting directory " +
+            "Then should throw InvalidPathException")
+    void deletingDirectoryByNullFolderDirShouldThrowException() {
+        String folderDir = null;
+
+        assertThrows(InvalidPathException.class,
+                () -> FileUtils.deleteDirectory(folderDir));
+    }
+
+    @Test
+    @DisplayName("Given empty folderDir " +
+            "When deleting directory " +
+            "Then should throw InvalidPathException")
+    void deletingDirectoryByEmptyFolderDirShouldThrowException() {
+        String folderDir = "";
+
+        assertThrows(InvalidPathException.class,
+                () -> FileUtils.deleteDirectory(folderDir));
+    }
+
+    @Test
+    @DisplayName("Given folderDir " +
+            "When deleting directory " +
+            "Then should delete directory")
+    void deletingDirectoryByFolderDirShouldDeleteDirectory() throws IOException {
+        String folderDir = "tmp";
+
+        Path path = Paths.get("/" + folderDir);
+        Files.createDirectories(path);
+
+        FileUtils.deleteDirectory(folderDir);
+
+        assertFalse(new File(folderDir).isDirectory());
     }
 }

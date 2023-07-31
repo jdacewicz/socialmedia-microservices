@@ -30,6 +30,9 @@ public class FileUtils {
     }
 
     public static void deleteDirectory(String folderDir) throws IOException {
+        if (folderDir == null || folderDir.isBlank()) {
+            throw new InvalidPathException();
+        }
         File directory = new File(folderDir);
         org.apache.commons.io.FileUtils.deleteDirectory(directory);
     }
