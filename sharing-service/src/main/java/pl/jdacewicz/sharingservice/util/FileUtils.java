@@ -1,6 +1,7 @@
 package pl.jdacewicz.sharingservice.util;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jdacewicz.sharingservice.exception.InvalidFileNameException;
 import pl.jdacewicz.sharingservice.exception.InvalidPathException;
@@ -12,8 +13,7 @@ import java.io.InputStream;
 public class FileUtils {
 
     public static void saveFile(MultipartFile file, String fileName, String fileDir) throws IOException {
-        if (fileName == null || fileDir == null ||
-                fileName.isBlank() || fileDir.isBlank()) {
+        if (StringUtils.isBlank(fileDir) || StringUtils.isBlank(fileName)) {
             throw new InvalidPathException();
         }
         InputStream inputStream = file.getInputStream();
@@ -22,8 +22,7 @@ public class FileUtils {
     }
 
     public static void deleteFile(String fileDir, String fileName) throws IOException {
-        if (fileName == null || fileDir == null ||
-                fileName.isBlank() || fileDir.isBlank()) {
+        if (StringUtils.isBlank(fileDir) || StringUtils.isBlank(fileName)) {
             throw new InvalidPathException();
         }
         File directory = new File(fileDir + "/" + fileName);
@@ -31,7 +30,7 @@ public class FileUtils {
     }
 
     public static void deleteDirectory(String folderDir) throws IOException {
-        if (folderDir == null || folderDir.isBlank()) {
+        if (StringUtils.isBlank(folderDir)) {
             throw new InvalidPathException();
         }
         File directory = new File(folderDir);
@@ -40,7 +39,7 @@ public class FileUtils {
 
     public static String generateFileName(String originalName) {
         String extension = "";
-        if (originalName == null || originalName.isBlank()) {
+        if (StringUtils.isBlank(originalName)) {
             throw new InvalidFileNameException();
         }
         int lastDotIndex = originalName.lastIndexOf('.');
