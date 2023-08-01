@@ -14,8 +14,7 @@ import pl.jdacewicz.sharingservice.repository.AdvertisementRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,48 +34,45 @@ class AdvertisementServiceTest {
     @Test
     @DisplayName("Given null name " +
             "When getting advertisements " +
-            "Then should return all advertisements")
-    void gettingAdvertisementsByNullNameShouldReturnAllAdvertisements() {
+            "Then should return Page of all advertisements")
+    void x() {
         String name = null;
 
-        List<Advertisement> list = List.of(new Advertisement());
-        Page<Advertisement> page = new PageImpl<>(list);
+        Page<Advertisement> page = new PageImpl<>(List.of());
         when(advertisementRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Page<Advertisement> returnedPage = advertisementService.getAdvertisements(name, 1 , 1,
-                "id", "asc");
-        assertFalse(returnedPage.isEmpty());
+        Page<Advertisement> result = advertisementService.getAdvertisements(name, 1,
+                1, "sort", "directory");
+        assertEquals(page, result);
     }
 
     @Test
     @DisplayName("Given empty name " +
             "When getting advertisements " +
-            "Then should return all advertisements")
-    void gettingAdvertisementsByEmptyNameShouldReturnAllAdvertisements() {
+            "Then should return Page of all advertisements")
+    void x32() {
         String name = "";
 
-        List<Advertisement> list = List.of(new Advertisement());
-        Page<Advertisement> page = new PageImpl<>(list);
+        Page<Advertisement> page = new PageImpl<>(List.of());
         when(advertisementRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Page<Advertisement> returnedPage = advertisementService.getAdvertisements(name, 1 , 1,
-                "id", "asc");
-        assertFalse(returnedPage.isEmpty());
+        Page<Advertisement> result = advertisementService.getAdvertisements(name, 1,
+                1, "sort", "directory");
+        assertEquals(page, result);
     }
 
     @Test
-    @DisplayName("Given not null and not empty name " +
+    @DisplayName("Given name " +
             "When getting advertisements " +
-            "Then should return advertisements with name")
-    void gettingAdvertisementsByNotNullAndNotEmptyNameShouldReturnAllAdvertisementsWithName() {
+            "Then should return Page of all advertisements by name")
+    void x2() {
         String name = "test";
 
-        Page<Advertisement> page = Page.empty();
-        when(advertisementRepository.findAllByName(any(String.class), any(Pageable.class)))
-                .thenReturn(page);
+        Page<Advertisement> page = new PageImpl<>(List.of());
+        when(advertisementRepository.findAllByName(any(String.class), any(Pageable.class))).thenReturn(page);
 
-        Page<Advertisement> returnedPage = advertisementService.getAdvertisements(name, 1 , 1,
-                "id", "asc");
-        assertTrue(returnedPage.isEmpty());
+        Page<Advertisement> result = advertisementService.getAdvertisements(name, 1,
+                1, "sort", "directory");
+        assertEquals(page, result);
     }
 }
