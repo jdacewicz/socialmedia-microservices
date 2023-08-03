@@ -1,5 +1,6 @@
 package pl.jdacewicz.sharingservice.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class ReactionService {
 
     public Page<Reaction> getReactions(String name, int page, int size, String sort, String directory) {
         Pageable paging = PageableUtils.createPageable(page, size, sort, directory);
-        return (name == null || name.isEmpty()) ?
+        return (StringUtils.isBlank(name)) ?
                 reactionRepository.findAll(paging) : reactionRepository.findAllByName(name, paging);
     }
 

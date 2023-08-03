@@ -9,74 +9,102 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import pl.jdacewicz.sharingservice.exception.RecordNotFoundException;
 import pl.jdacewicz.sharingservice.model.Reaction;
 import pl.jdacewicz.sharingservice.repository.ReactionRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 
 class ReactionServiceTest {
 
     @InjectMocks
-    ReactionService reactionService;
+    ReactionService service;
 
     @Mock
-    ReactionRepository reactionRepository;
+    ReactionRepository repository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
     @DisplayName("Given null name " +
-            "When getting advertisements " +
-            "Then should return all advertisements")
-    void gettingAdvertisementsByNullNameShouldReturnAllAdvertisements() {
+            "When getting reactions " +
+            "Then should return all reactions")
+    void gettingReactionsByNullNameShouldReturnAllReactions() {
         String name = null;
 
-        List<Reaction> list = List.of(new Reaction());
-        Page<Reaction> page = new PageImpl<>(list);
-        when(reactionRepository.findAll(any(Pageable.class))).thenReturn(page);
+        Page<Reaction> page = new PageImpl<>(List.of());
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Page<Reaction> returnedPage = reactionService.getReactions(name, 1 , 1,
-                "id", "asc");
-        assertFalse(returnedPage.isEmpty());
+        Page<Reaction> result = service.getReactions(name, 1, 1, "sort", "directory");
+
+        assertEquals(page, result);
     }
 
     @Test
     @DisplayName("Given empty name " +
-            "When getting advertisements " +
-            "Then should return all advertisements")
-    void gettingAdvertisementsByEmptyNameShouldReturnAllAdvertisements() {
+            "When getting reactions " +
+            "Then should return all reactions")
+    void gettingReactionsByEmptyNameShouldReturnAllReactions() {
         String name = "";
 
-        List<Reaction> list = List.of(new Reaction());
-        Page<Reaction> page = new PageImpl<>(list);
-        when(reactionRepository.findAll(any(Pageable.class))).thenReturn(page);
+        Page<Reaction> page = new PageImpl<>(List.of());
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Page<Reaction> returnedPage = reactionService.getReactions(name, 1 , 1,
-                "id", "asc");
-        assertFalse(returnedPage.isEmpty());
+        Page<Reaction> result = service.getReactions(name, 1, 1, "sort", "directory");
+
+        assertEquals(page, result);
     }
 
     @Test
-    @DisplayName("Given not null and not empty name " +
-            "When getting advertisements " +
-            "Then should return advertisements with name")
-    void gettingAdvertisementsByNotNullAndNotEmptyNameShouldReturnAllAdvertisementsWithName() {
-        String name = "test";
+    @DisplayName("Given name " +
+            "When getting reactions " +
+            "Then should return all reactions with name")
+    void gettingReactionsByNameShouldReturnReactionsWithName() {
+        String name = "name";
 
-        Page<Reaction> page = Page.empty();
-        when(reactionRepository.findAllByName(any(String.class), any(Pageable.class)))
-                .thenReturn(page);
+        Page<Reaction> page = new PageImpl<>(List.of());
+        when(repository.findAllByName(any(String.class), any(Pageable.class))).thenReturn(page);
 
-        Page<Reaction> returnedPage = reactionService.getReactions(name, 1 , 1,
-                "id", "asc");
-        assertTrue(returnedPage.isEmpty());
+        Page<Reaction> result = service.getReactions(name, 1, 1, "sort", "directory");
+
+        assertEquals(page, result);
+    }
+
+    @Test
+    @DisplayName("Given existing id " +
+            "When getting reaction " +
+            "Then should return reaction")
+    void gettingReactionByExistingIdShouldReturnReaction() {
+        int id = 1;
+
+        Reaction reaction = new Reaction();
+        when(repository.findById(id)).thenReturn(Optional.of(reaction));
+
+        Reaction result = service.getReactionById(id);
+
+        assertEquals(reaction, result);
+    }
+
+    @Test
+    @DisplayName("Given not existing id " +
+            "When getting reaction " +
+            "Then should throw RecordNotFoundException")
+    void gettingReactionByNotExistingIdShouldThrowException() {
+        int id = 1;
+
+        when(repository.findById(id)).thenThrow(RecordNotFoundException.class);
+
+        assertThrows(RecordNotFoundException.class,
+                () -> service.getReactionById(id));
     }
 }
