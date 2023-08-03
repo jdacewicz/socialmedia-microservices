@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -55,15 +56,15 @@ public class Comment {
     private boolean visible = true;
 
     public String getImagePath() {
-        if (image == null) {
-            return null;
+        if (StringUtils.isBlank(image)) {
+            return "";
         }
         return getDirectoryPath() + "/" + image;
     }
 
     public String getDirectoryPath() {
         if (post == null && advertisement == null) {
-            return null;
+            return "";
         }
         return (post == null) ? advertisement.getDirectoryPath() + "/" + COMMENTS_DIRECTORY_NAME :
                 post.getDirectoryPath() + "/" + COMMENTS_DIRECTORY_NAME;
