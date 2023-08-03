@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.jdacewicz.sharingservice.util.FileStorageUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +34,10 @@ public class User {
     private List<Post> posts = new LinkedList<>();
 
     public String getImagePath() {
-        if (profilePicture == null) {
-            return null;
-        }
-        return getDirectoryPath() + "/" + profilePicture;
+        return FileStorageUtils.getImagePath(this.id, this.profilePicture, USERS_DIRECTORY_PATH);
     }
 
     public String getDirectoryPath() {
-        return USERS_DIRECTORY_PATH + "/" + id;
+        return FileStorageUtils.getDirectoryPath(this.id, USERS_DIRECTORY_PATH);
     }
 }

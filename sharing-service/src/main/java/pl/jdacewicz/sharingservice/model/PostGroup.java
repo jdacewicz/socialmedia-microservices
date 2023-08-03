@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import pl.jdacewicz.sharingservice.util.FileStorageUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,13 +46,10 @@ public class PostGroup extends Group{
     }
 
     public String getImagePath() {
-        if (image == null) {
-            return null;
-        }
-        return getDirectoryPath() + "/" + image;
+        return FileStorageUtils.getImagePath(super.getId(), this.image, POST_GROUPS_DIRECTORY_PATH);
     }
 
     public String getDirectoryPath() {
-        return POST_GROUPS_DIRECTORY_PATH + "/" + super.getId();
+        return FileStorageUtils.getDirectoryPath(super.getId(), POST_GROUPS_DIRECTORY_PATH);
     }
 }

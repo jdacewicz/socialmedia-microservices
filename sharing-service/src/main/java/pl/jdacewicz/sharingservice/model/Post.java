@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import pl.jdacewicz.sharingservice.util.FileStorageUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -56,14 +57,11 @@ public class Post {
     private boolean visible = true;
 
     public String getImagePath() {
-        if (image == null) {
-            return null;
-        }
-        return getDirectoryPath() + "/" + image;
+        return FileStorageUtils.getImagePath(this.id, this.image, POSTS_DIRECTORY_PATH);
     }
 
     public String getDirectoryPath() {
-        return POSTS_DIRECTORY_PATH + "/" + id;
+        return FileStorageUtils.getDirectoryPath(this.id, POSTS_DIRECTORY_PATH);
     }
 
     public void addReaction(Reaction reaction) {

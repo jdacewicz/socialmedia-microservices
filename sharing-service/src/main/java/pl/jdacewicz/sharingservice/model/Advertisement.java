@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import pl.jdacewicz.sharingservice.util.FileStorageUtils;
 
 @Entity
 @Data
@@ -25,7 +26,7 @@ public class Advertisement extends Post {
 
     @Override
     public String getDirectoryPath() {
-        return ADVERTISEMENTS_DIRECTORY_PATH + "/" + super.getId();
+        return FileStorageUtils.getDirectoryPath(super.getId(), ADVERTISEMENTS_DIRECTORY_PATH);
     }
 
 }

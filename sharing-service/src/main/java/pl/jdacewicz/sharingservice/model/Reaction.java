@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.jdacewicz.sharingservice.util.FileStorageUtils;
 
 import java.util.List;
 
@@ -36,13 +37,10 @@ public class Reaction {
     private List<Advertisement> advertisementList;
 
     public String getImagePath() {
-        if (image == null) {
-            return null;
-        }
-        return getDirectoryPath() + "/" + image;
+        return FileStorageUtils.getImagePath(this.id, this.image, REACTIONS_DIRECTORY_PATH);
     }
 
     public String getDirectoryPath() {
-        return REACTIONS_DIRECTORY_PATH + "/" + id;
+        return FileStorageUtils.getDirectoryPath(this.id, REACTIONS_DIRECTORY_PATH);
     }
 }
